@@ -12,6 +12,7 @@ namespace AnotaRtf
     public partial class Form1 : Form
     {
         private TabPage placeholderTab;
+        private Timer ensureVisibleTimer;
         private const string REGISTRY_KEY = @"AnoteitorRTF\MyApp";
         private const string TABS_SUBKEY = @"AnoteitorRTF\MyApp\Tabs";
 
@@ -27,18 +28,91 @@ namespace AnotaRtf
             tabControl.MouseDoubleClick += TabControl_MouseDoubleClick;
             this.KeyDown += Form1_KeyDown;
             this.KeyPreview = true;
-            Version version = Version.Parse(Application.ProductVersion);
-            this.Text = $"AnoteitoRtf v{version.Major}.{version.Minor}";
+
+            // Extrai apenas a parte numérica da versão (remove tudo após o primeiro '+')
+            string versionStr = Application.ProductVersion.Split('+')[0];
+
+            // Garante que tenha pelo menos major.minor
+            string[] parts = versionStr.Split('.');
+            if (parts.Length >= 2)
+            {
+                this.Text = $"AnoteitoRtf v{parts[0]}.{parts[1]}";
+            }
+            else
+            {
+                this.Text = "AnoteitoRtf"; // Fallback seguro
+            }
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            Debug.WriteLine("[v1.4.1] Form1_Shown acionado");
+            Debug.WriteLine("[v1.4.1] Forçando janela visível");
+            this.WindowState = FormWindowState.Normal;
+            this.BringToFront();
+            this.Activate();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Debug.WriteLine("[v1.3.3] Iniciando...");
+            Debug.WriteLine("[v1.3.9] Form1_Load iniciado");
+
+            // 1. Carrega posição do Registro
             LoadWindowPosition();
+
+            // 2. Garante que a janela esteja visível e dentro da área de trabalho            
+
+            // 3. Configura placeholder e carrega abas
             SetupPlaceholder();
             LoadTabs();
+
+            // 4. Atualiza título com versão
+            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            this.Text = $"AnoteitoRtf v{version.Major}.{version.Minor}";
         }
 
+        private void Form1_Activated(object sender, EventArgs e)
+        {
+            EnsureWindowVisible();
+        }
+
+        private void EnsureWindowVisible()
+        {
+            // Força a janela para o estado normal (não minimizada)
+            this.WindowState = FormWindowState.Normal;
+
+            // Garante que a janela esteja no topo
+            this.BringToFront();
+            //this.Activate();
+
+            // Se a janela ainda não estiver visível após 100ms, tenta novamente
+            //if (!IsWindowVisible())
+            //{
+                Debug.WriteLine("[v1.4.0] Janela não visível — agendando correção com timer");
+
+                ensureVisibleTimer = new Timer
+                {
+                    Interval = 100, // 0.1 segundo
+                    Enabled = true
+                };
+
+                ensureVisibleTimer.Tick += (s, e) =>
+                {
+                    Debug.WriteLine("[v1.4.0] Timer acionado — forçando visibilidade");
+                    this.WindowState = FormWindowState.Normal;
+                    this.BringToFront();
+                    this.Activate();
+                    ensureVisibleTimer.Stop();
+                };
+            //}
+        }
+
+        private bool IsWindowVisible()
+        {
+            return this.WindowState != FormWindowState.Minimized &&
+                   this.IsHandleCreated &&
+                   !this.IsDisposed;
+        }
         private void SetupPlaceholder()
         {
             // Mantém tb2 como placeholder "+", mas remove tb1 (será recriada dinamicamente)
@@ -58,11 +132,31 @@ namespace AnotaRtf
                 {
                     if (key != null)
                     {
-                        this.StartPosition = FormStartPosition.Manual;
-                        this.Left = (int)(key.GetValue("WindowPositionX") ?? this.Left);
-                        this.Top = (int)(key.GetValue("WindowPositionY") ?? this.Top);
-                        this.Width = (int)(key.GetValue("WindowWidth") ?? this.Width);
-                        this.Height = (int)(key.GetValue("WindowHeight") ?? this.Height);
+                        int x = (int)(key.GetValue("WindowPositionX") ?? this.Left);
+                        int y = (int)(key.GetValue("WindowPositionY") ?? this.Top);
+                        int width = (int)(key.GetValue("WindowWidth") ?? this.Width);
+                        int height = (int)(key.GetValue("WindowHeight") ?? this.Height);
+
+                        // Valida se as coordenadas estão dentro da área de trabalho
+                        Rectangle screenBounds = Screen.PrimaryScreen.WorkingArea;
+                        bool isValid = x >= 0 && y >= 0 &&
+                                       x < screenBounds.Right &&
+                                       y < screenBounds.Bottom &&
+                                       width > 0 && height > 0;
+
+                        if (isValid)
+                        {
+                            this.StartPosition = FormStartPosition.Manual;
+                            this.Left = x;
+                            this.Top = y;
+                            this.Width = width;
+                            this.Height = height;
+                        }
+                        else
+                        {
+                            Debug.WriteLine("[v1.4.1] Coordenadas inválidas — resetando para centro");
+                            this.StartPosition = FormStartPosition.CenterScreen;
+                        }
                     }
                 }
             }
@@ -250,33 +344,34 @@ namespace AnotaRtf
                 Height = 160,
                 MaximizeBox = false,
                 MinimizeBox = false,
-                FormBorderStyle = FormBorderStyle.FixedDialog,
-                AcceptButton = null, // Evita foco automático no OK
-                CancelButton = null
+                FormBorderStyle = FormBorderStyle.FixedDialog
             })
             using (Label lbl = new Label { Text = "Nome da aba:", AutoSize = true, Location = new Point(20, 25) })
             using (TextBox input = new TextBox
             {
                 Location = new Point(20, 50),
                 Size = new Size(260, 25),
-                Text = current,
-                Anchor = AnchorStyles.Left | AnchorStyles.Right
-            })
-            using (Button btnOk = new Button
-            {
-                Text = "OK",
-                Location = new Point(140, 90),
-                Size = new Size(80, 30),
-                DialogResult = DialogResult.OK
-            })
-            using (Button btnCancel = new Button
-            {
-                Text = "Cancelar",
-                Location = new Point(230, 90),
-                Size = new Size(80, 30),
-                DialogResult = DialogResult.Cancel
+                Text = current
             })
             {
+                Button btnOk = new Button
+                {
+                    Text = "OK",
+                    Size = new Size(80, 30),
+                    DialogResult = DialogResult.OK
+                };
+
+                Button btnCancel = new Button
+                {
+                    Text = "Cancelar",
+                    Size = new Size(80, 30),
+                    DialogResult = DialogResult.Cancel
+                };
+
+                // 🔑 Define botões de aceitação/cancelamento (Enter/Esc)
+                prompt.AcceptButton = btnOk;
+                prompt.CancelButton = btnCancel;
+
                 // Centraliza os botões horizontalmente
                 int totalButtonsWidth = btnOk.Width + btnCancel.Width + 10;
                 int startX = (prompt.ClientSize.Width - totalButtonsWidth) / 2;
@@ -288,7 +383,7 @@ namespace AnotaRtf
                 prompt.Controls.Add(btnOk);
                 prompt.Controls.Add(btnCancel);
 
-                // Define foco no TextBox
+                // Define foco no TextBox ao abrir
                 prompt.Load += (s, e) => input.Focus();
 
                 return prompt.ShowDialog() == DialogResult.OK ? input.Text.Trim() : null;

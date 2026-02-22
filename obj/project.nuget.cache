@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "KDZNDCNtp/x2qYjHZFZbCzTBI/j/XQmru1OuR4No4sgSSDL/IXBUQ/e8f3uJtkmGW0VDXAgbR4nh0rdq0VKcAA==",
+  "dgSpecHash": "hDoq6m8c6nI=",
   "success": true,
   "projectFilePath": "D:\\Prog\\AnofaRTF\\AnotaRtf-main\\AnotaRtf\\AnotaRtf.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Dayse\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\5.0.17\\microsoft.netcore.app.host.win-x64.5.0.17.nupkg.sha512"
+  ],
   "logs": []
 }

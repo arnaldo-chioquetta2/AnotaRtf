@@ -16,21 +16,27 @@
         }
       },
       "AtcCtrl/1.2.9": {
+        "dependencies": {
+          "ATCDll": "1.0.0"
+        },
         "runtime": {
-          "AtcCtrl.dll": {}
+          "AtcCtrl.dll": {
+            "assemblyVersion": "1.2.9.0",
+            "fileVersion": "1.2.9.0"
+          }
         }
       },
-      "EditRtf/1.0.0.0": {
+      "ATCDll/1.0.0": {
         "runtime": {
-          "EditRtf.dll": {
+          "ATCDll.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
         }
       },
-      "ATCDll/1.0.0.0": {
+      "EditRtf/1.0.0.0": {
         "runtime": {
-          "ATCDll.dll": {
+          "EditRtf.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -49,12 +55,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "EditRtf/1.0.0.0": {
-      "type": "reference",
+    "ATCDll/1.0.0": {
+      "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "ATCDll/1.0.0.0": {
+    "EditRtf/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

@@ -50,7 +50,6 @@ D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\AnotaRtf.deps
 D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\AnotaRtf.runtimeconfig.json
 D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\AnotaRtf.runtimeconfig.dev.json
 D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\AnotaRtf.dll
-D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\ref\AnotaRtf.dll
 D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\AnotaRtf.pdb
 D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\AtcCtrl.dll
 D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\EditRtf.dll
@@ -69,3 +68,6 @@ D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\obj\Release\net5.0-windows\AnotaRtf.dll
 D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\obj\Release\net5.0-windows\ref\AnotaRtf.dll
 D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\obj\Release\net5.0-windows\AnotaRtf.pdb
 D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\obj\Release\net5.0-windows\AnotaRtf.genruntimeconfig.cache
+D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\obj\Release\net5.0-windows\AnotaRtf.sourcelink.json
+D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\obj\Release\net5.0-windows\AnotaRtf.csproj.Up2Date
+D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\obj\Release\net5.0-windows\refint\AnotaRtf.dll
