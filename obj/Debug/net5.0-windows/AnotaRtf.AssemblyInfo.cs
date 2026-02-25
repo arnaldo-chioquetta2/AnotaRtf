@@ -13,8 +13,8 @@ using System.Reflection;
 
 [assembly: System.Reflection.AssemblyCompanyAttribute("AnotaRtf")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("1.1.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.1.0")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("1.1.1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.1.1+7cf6a503bf673b8d44d83002479419e98dce4289")]
 [assembly: System.Reflection.AssemblyProductAttribute("AnotaRtf")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AnotaRtf")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.1.1.0")]

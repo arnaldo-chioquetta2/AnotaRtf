@@ -1,4 +1,155 @@
-{\rtf1\ansi\deff0\nouicompat{\fonttbl{\f0\fnil Arial;}}
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil Arial;}}
+{\colortbl ;\red0\green0\blue255;\red0\green0\blue0;}
 {\*\generator Riched20 10.0.19041}\viewkind4\uc1 
-\pard\f0\fs20\lang1046\par
+\pard\cf1\fs24\lang1046 # FASE 2 \f1\emdash  Estrutura de Dados e Controle Interno\par
+\par
+Base l\f0\'f3gica que sustentar\'e1 ordena\'e7\'e3o, filtro e edi\'e7\'e3o.\par
+\par
+## 2.1 Estrutura de Armazenamento\par
+\par
+Criar:\par
+\par
+* `List<string> listaCodigos`\par
+* `BindingSource bindingSource`\par
+\par
+Inicializar no `Form_Load`.\par
+\cf2\par
+---\par
+\par
+## 2.2 M\'e9todo Central de Atualiza\'e7\'e3o\par
+\par
+Criar m\'e9todo `AtualizarGrid()` respons\'e1vel por:\par
+\par
+* Aplicar ordena\'e7\'e3o natural\par
+* Aplicar filtro ativo\par
+* Atualizar BindingSource\par
+* Garantir estabilidade visual\par
+\par
+Esse m\'e9todo ser\'e1 reutilizado por:\par
+\par
+* Inser\'e7\'e3o\par
+* Edi\'e7\'e3o\par
+* Exclus\'e3o\par
+* Filtro\par
+\par
+---\par
+\par
+# FASE 3 \f1\emdash  Implementa\f0\'e7\'e3o da Ordena\'e7\'e3o Natural\par
+\par
+Depend\'eancia: Estrutura de dados pronta.\par
+\par
+## 3.1 Classe Auxiliar\par
+\par
+Criar classe `CodigoPartilheira` contendo:\par
+\par
+* Prefixo\par
+* N\'famero\par
+* Sufixo\par
+* M\'e9todo Parse()\par
+\par
+---\par
+\par
+## 3.2 Algoritmo de Ordena\'e7\'e3o\par
+\par
+Implementar ordena\'e7\'e3o por:\par
+\par
+* Prefixo\par
+* N\'famero (int)\par
+* Sufixo\par
+\par
+Testar cen\'e1rios:\par
+\par
+* Apenas n\'famero\par
+* Prefixo + n\'famero\par
+* N\'famero + sufixo\par
+* Prefixo + n\'famero + sufixo\par
+\par
+---\par
+\par
+# FASE 4 \f1\emdash  Inser\f0\'e7\'e3o e Edi\'e7\'e3o\par
+\par
+Depend\'eancia: Ordena\'e7\'e3o pronta.\par
+\par
+## 4.1 Inser\'e7\'e3o\par
+\par
+* Evento bot\'e3o Adicionar\par
+* Evento Enter no TextBox\par
+* Convers\'e3o autom\'e1tica para UpperCase\par
+* Inser\'e7\'e3o na lista\par
+* Chamada de `AtualizarGrid()`\par
+\par
+---\par
+\par
+## 4.2 Edi\'e7\'e3o Direta\par
+\par
+* Permitir edi\'e7\'e3o da c\'e9lula na Grid\par
+* Evento `CellEndEdit`\par
+* Normalizar valor\par
+* Atualizar lista interna\par
+* Chamar `AtualizarGrid()`\par
+* Manter foco no item editado\par
+\par
+---\par
+\par
+# FASE 5 \f1\emdash  Exclus\f0\'e3o e Limpeza\par
+\par
+Depend\'eancia: Grid funcional.\par
+\par
+## 5.1 Exclus\'e3o de Item\par
+\par
+* Bot\'e3o `btExcluir`\par
+* Remover item selecionado\par
+* AtualizarGrid()\par
+\par
+---\par
+\par
+## 5.2 Limpar Lista\par
+\par
+* Bot\'e3o `btLimpar`\par
+* Confirma\'e7\'e3o via MessageBox\par
+* Executar `listaCodigos.Clear()`\par
+* AtualizarGrid()\par
+\par
+---\par
+\par
+# FASE 6 \f1\emdash  Implementa\f0\'e7\'e3o do Filtro Simples\par
+\par
+Depend\'eancia: M\'e9todo AtualizarGrid centralizado.\par
+\par
+## 6.1 Evento TextChanged\par
+\par
+* Capturar texto digitado em `txBuscar`\par
+* Aplicar filtro via LINQ\par
+* Atualizar BindingSource\par
+\par
+---\par
+\par
+## 6.2 Garantias de Estabilidade\par
+\par
+* Filtro n\'e3o altera lista principal\par
+* Ao limpar filtro, exibir lista completa\par
+* Ao editar item filtrado, reaplicar filtro automaticamente\par
+\par
+---\par
+\par
+# FASE 7 \f1\emdash  Impress\f0\'e3o\par
+\par
+Depend\'eancia: Lista e ordena\'e7\'e3o totalmente est\'e1veis.\par
+\par
+## 7.1 Implementa\'e7\'e3o T\'e9cnica\par
+\par
+* Criar objeto `PrintDocument`\par
+* Criar `PrintPreviewDialog`\par
+* Implementar controle de pagina\'e7\'e3o manual\par
+\par
+---\par
+\par
+## 7.2 Layout\par
+\par
+* Papel A4\par
+* Fonte leg\'edvel (Arial 14\f1\endash 16)\par
+* Uma coluna\par
+* Margens padr\f0\'e3o\par
+* Quebra autom\'e1tica de p\'e1gina\par
+\par
 }

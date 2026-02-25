@@ -15,11 +15,7 @@ namespace AnotaRtf
         private Timer ensureVisibleTimer;
         private const string REGISTRY_KEY = @"AnoteitorRTF\MyApp";
         private const string TABS_SUBKEY = @"AnoteitorRTF\MyApp\Tabs";
-
-        // v1.3.3 - Correção crítica: não usa Clear() destrutivo
-        //   - Mantém a estrutura original do TabControl
-        //   - Remove apenas abas dinâmicas (não tb1 nem tb2)
-        //   - Garante renderização correta do ATCRTF
+        private bool firstShown = true;
 
         public Form1()
         {
@@ -34,23 +30,52 @@ namespace AnotaRtf
 
             // Garante que tenha pelo menos major.minor
             string[] parts = versionStr.Split('.');
-            if (parts.Length >= 2)
+
+            switch (parts.Length)
             {
-                this.Text = $"AnoteitoRtf v{parts[0]}.{parts[1]}";
+                case 1:
+                    this.Text = $"AnoteitoRtf v{parts[0]}";
+                    break;
+                case 2:
+                    this.Text = $"AnoteitoRtf v{parts[0]}.{parts[1]}";
+                    break;
+                case 3:
+                    this.Text = $"AnoteitoRtf v{parts[0]}.{parts[1]}.{parts[2]}";
+                    break;
+                default:
+                    this.Text = "AnoteitoRtf"; // Fallback seguro
+                    break;
             }
-            else
-            {
-                this.Text = "AnoteitoRtf"; // Fallback seguro
-            }
+
         }
 
         private void Form1_Shown(object sender, EventArgs e)
         {
-            Debug.WriteLine("[v1.4.1] Form1_Shown acionado");
-            Debug.WriteLine("[v1.4.1] Forçando janela visível");
-            this.WindowState = FormWindowState.Normal;
-            this.BringToFront();
-            this.Activate();
+            Debug.WriteLine($"[v1.4.2] Form1_Shown | firstShown={firstShown}, WindowState={this.WindowState}");
+
+            if (firstShown)
+            {
+                firstShown = false;
+
+                // Só restaura se NÃO estiver minimizada (respeita intenção do usuário)
+                if (this.WindowState != FormWindowState.Minimized)
+                {
+                    this.WindowState = FormWindowState.Normal;
+                    this.BringToFront();
+                    this.Activate();
+
+                    // Valida posição apenas na primeira exibição
+                    Rectangle screenBounds = Screen.PrimaryScreen.WorkingArea;
+                    if (this.Left < 0 || this.Top < 0 ||
+                        this.Right > screenBounds.Right ||
+                        this.Bottom > screenBounds.Bottom)
+                    {
+                        Debug.WriteLine("[v1.4.2] Janela fora da tela — centralizando");
+                        this.StartPosition = FormStartPosition.CenterScreen;
+                        this.WindowState = FormWindowState.Normal;
+                    }
+                }
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -67,8 +92,8 @@ namespace AnotaRtf
             LoadTabs();
 
             // 4. Atualiza título com versão
-            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            this.Text = $"AnoteitoRtf v{version.Major}.{version.Minor}";
+            // var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            // this.Text = $"AnoteitoRtf v{version.Major}.{version.Minor}";
         }
 
         private void Form1_Activated(object sender, EventArgs e)
