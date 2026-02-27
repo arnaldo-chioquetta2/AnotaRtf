@@ -80,20 +80,54 @@ namespace AnotaRtf
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Debug.WriteLine("[v1.3.9] Form1_Load iniciado");
+            Debug.WriteLine("[v1.4.3] Form1_Load iniciado");
 
-            // 1. Carrega posição do Registro
             LoadWindowPosition();
-
-            // 2. Garante que a janela esteja visível e dentro da área de trabalho            
-
-            // 3. Configura placeholder e carrega abas
             SetupPlaceholder();
             LoadTabs();
 
-            // 4. Atualiza título com versão
-            // var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            // this.Text = $"AnoteitoRtf v{version.Major}.{version.Minor}";
+            // 🔑 Restaura aba ativa após carregar todas
+            RestoreActiveTab();
+
+            // Atualiza título com versão
+            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            this.Text = $"AnoteitoRtf v{version.Major}.{version.Minor}";
+        }
+
+        private void RestoreActiveTab()
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(REGISTRY_KEY))
+                {
+                    if (key != null)
+                    {
+                        object value = key.GetValue("ActiveTabIndex");
+                        if (value is int savedIndex && savedIndex >= 0 && savedIndex < tabControl.TabPages.Count)
+                        {
+                            // Garante que não seleciona a aba "+"
+                            if (tabControl.TabPages[savedIndex] != placeholderTab)
+                            {
+                                tabControl.SelectedIndex = savedIndex;
+                                Debug.WriteLine($"[v1.4.3] Aba restaurada: índice {savedIndex} ('{tabControl.TabPages[savedIndex].Text}')");
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            // Fallback: seleciona primeira aba real
+            for (int i = 0; i < tabControl.TabPages.Count; i++)
+            {
+                if (tabControl.TabPages[i] != placeholderTab)
+                {
+                    tabControl.SelectedIndex = i;
+                    Debug.WriteLine($"[v1.4.3] Fallback: selecionada primeira aba (índice {i})");
+                    break;
+                }
+            }
         }
 
         private void Form1_Activated(object sender, EventArgs e)
@@ -451,6 +485,8 @@ namespace AnotaRtf
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Debug.WriteLine("[v1.4.3] Form1_FormClosing iniciado");
+
             // Salva conteúdo de todas as abas
             foreach (TabPage tab in tabControl.TabPages)
             {
@@ -461,6 +497,21 @@ namespace AnotaRtf
             }
 
             SaveTabs();
+
+            // 🔑 Salva qual aba estava ativa (índice)
+            int activeTabIndex = tabControl.SelectedIndex;
+            if (activeTabIndex >= 0 && activeTabIndex < tabControl.TabPages.Count && tabControl.TabPages[activeTabIndex] != placeholderTab)
+            {
+                try
+                {
+                    using (RegistryKey key = Registry.CurrentUser.CreateSubKey(REGISTRY_KEY, true))
+                    {
+                        key.SetValue("ActiveTabIndex", activeTabIndex);
+                        Debug.WriteLine($"[v1.4.3] Aba ativa salva: índice {activeTabIndex}");
+                    }
+                }
+                catch { }
+            }
 
             // Salva posição da janela
             try
@@ -475,5 +526,6 @@ namespace AnotaRtf
             }
             catch { }
         }
+
     }
 }
