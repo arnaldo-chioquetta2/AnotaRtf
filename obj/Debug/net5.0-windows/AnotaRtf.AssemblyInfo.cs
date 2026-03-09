@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AnotaRtf")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.1.2.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.1.2+52349e08da069ff3de2bde066f81aad57b2d178d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.1.2+e0967fdd5ad17f1630833dfadfac658227d5c426")]
 [assembly: System.Reflection.AssemblyProductAttribute("AnotaRtf")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AnotaRtf")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.1.2.0")]

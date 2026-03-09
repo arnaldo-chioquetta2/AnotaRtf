@@ -24,7 +24,7 @@ namespace AnotaRtf
             InitializeComponent();
             tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
             tabControl.MouseDoubleClick += TabControl_MouseDoubleClick;
-            this.KeyDown += Form1_KeyDown;
+            //this.KeyDown += Form1_KeyDown;
             this.KeyPreview = true;
 
             CreateTabContextMenu();
@@ -255,12 +255,13 @@ namespace AnotaRtf
             //}
         }
 
-        private bool IsWindowVisible()
-        {
-            return this.WindowState != FormWindowState.Minimized &&
-                   this.IsHandleCreated &&
-                   !this.IsDisposed;
-        }
+        //private bool IsWindowVisible()
+        //{
+        //    return this.WindowState != FormWindowState.Minimized &&
+        //           this.IsHandleCreated &&
+        //           !this.IsDisposed;
+        //}
+
         private void SetupPlaceholder()
         {
             // Mantém tb2 como placeholder "+", mas remove tb1 (será recriada dinamicamente)
@@ -538,39 +539,39 @@ namespace AnotaRtf
             }
         }
 
-        private void Form1_KeyDown(object sender, KeyEventArgs e)
-        {
-            // Só permite exclusão de aba se:
-            // 1. A tecla pressionada é Delete
-            // 2. O TabControl tem foco (não o editor RTF nem outro controle)
-            // 3. Nenhuma aba está sendo editada (TextBox de renomeação não existe)
-            if (e.KeyCode == Keys.Delete && tabControl.ContainsFocus && tabControl.SelectedTab != null && tabControl.SelectedTab != placeholderTab)
-            {
-                // Verifica se o foco não está dentro do editor RTF (para não conflitar com exclusão de texto)
-                var activeControl = this.ActiveControl;
-                if (activeControl is ATCRTF || (activeControl is Control ctrl && ctrl.Parent is ATCRTF))
-                {
-                    return; // Ignora Delete se estiver digitando no editor
-                }
+        //private void Form1_KeyDown(object sender, KeyEventArgs e)
+        //{
+        //    // Só permite exclusão de aba se:
+        //    // 1. A tecla pressionada é Delete
+        //    // 2. O TabControl tem foco (não o editor RTF nem outro controle)
+        //    // 3. Nenhuma aba está sendo editada (TextBox de renomeação não existe)
+        //    if (e.KeyCode == Keys.Delete && tabControl.ContainsFocus && tabControl.SelectedTab != null && tabControl.SelectedTab != placeholderTab)
+        //    {
+        //        // Verifica se o foco não está dentro do editor RTF (para não conflitar com exclusão de texto)
+        //        var activeControl = this.ActiveControl;
+        //        if (activeControl is ATCRTF || (activeControl is Control ctrl && ctrl.Parent is ATCRTF))
+        //        {
+        //            return; // Ignora Delete se estiver digitando no editor
+        //        }
 
-                if (MessageBox.Show("Excluir esta aba permanentemente?", "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
-                {
-                    TabPage tab = tabControl.SelectedTab;
-                    ATCRTF editor = tab.Controls.OfType<ATCRTF>().FirstOrDefault();
-                    if (editor != null)
-                    {
-                        editor.SalvaRTF();
-                        try { if (File.Exists(editor.caminhoDoArquivo)) File.Delete(editor.caminhoDoArquivo); }
-                        catch { }
-                    }
-                    tabControl.TabPages.Remove(tab);
-                    SaveTabs();
-                    Debug.WriteLine("[v1.3.8] Aba excluída");
-                }
-                e.Handled = true;
-                e.SuppressKeyPress = true;
-            }
-        }
+        //        if (MessageBox.Show("Excluir esta aba permanentemente?", "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+        //        {
+        //            TabPage tab = tabControl.SelectedTab;
+        //            ATCRTF editor = tab.Controls.OfType<ATCRTF>().FirstOrDefault();
+        //            if (editor != null)
+        //            {
+        //                editor.SalvaRTF();
+        //                try { if (File.Exists(editor.caminhoDoArquivo)) File.Delete(editor.caminhoDoArquivo); }
+        //                catch { }
+        //            }
+        //            tabControl.TabPages.Remove(tab);
+        //            SaveTabs();
+        //            Debug.WriteLine("[v1.3.8] Aba excluída");
+        //        }
+        //        e.Handled = true;
+        //        e.SuppressKeyPress = true;
+        //    }
+        //}
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
