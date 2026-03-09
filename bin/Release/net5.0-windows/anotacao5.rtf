@@ -1,4 +1,91 @@
-{\rtf1\ansi\deff0\nouicompat{\fonttbl{\f0\fnil Arial;}}
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Arial;}}
+{\colortbl ;\red0\green128\blue0;}
 {\*\generator Riched20 10.0.19041}\viewkind4\uc1 
-\pard\f0\fs20\lang1046\par
+\pard\cf1\fs26\lang1046 0.2 Definir novos modelos de dados\par
+Criar classe TopicScoresResponse contendo categoryScores (Dictionary<string,int>).\par
+Criar classe NewsScoresItem contendo Url, Title e Scores.\par
+Criar classe TopicResult contendo Topic, Url e Score.\par
+\par
+1 Integra\'e7\'e3o com IA\par
+1.1 Substituir prompt antigo pelo novo prompt de classifica\'e7\'e3o por t\'f3picos.\par
+1.2 Alterar GroqService.ClassifyNewsAsync para retornar categoryScores.\par
+1.3 Validar resposta JSON e garantir que todos os t\'f3picos existam (preencher ausentes com 0).\par
+1.4 Garantir que os valores retornados estejam no intervalo 0 a 100.\cf0\par
+\par
+\cf1 2 Pipeline de processamento\par
+2.1 Ler URLs da fonte\par
+Se houver URLs no campo de texto da interface, usar essas.\par
+Caso contr\'e1rio usar o arquivo configurado.\par
+\cf0\par
+\cf1 2.2 Processar cada URL\par
+Executar scraping da p\'e1gina.\par
+Extrair t\'edtulo e texto.\par
+Enviar texto para a IA.\par
+Receber categoryScores.\par
+\cf0\par
+\cf1 2.3 Armazenar resultados\par
+Criar um objeto NewsScoresItem para cada not\'edcia.\par
+Guardar os scores em mem\'f3ria para uso posterior.\par
+\cf0\par
+\cf1 3 Sele\'e7\'e3o de melhor URL por assunto\par
+3.1 Definir lista fixa de t\'f3picos\par
+Utilizar a lista de assuntos do prompt exatamente na mesma ordem.\par
+\cf0\par
+\cf1 3.2 Algoritmo de sele\'e7\'e3o\par
+Para cada assunto na ordem definida:\par
+Encontrar a URL com maior score para aquele assunto.\par
+Selecionar essa URL como vencedora do assunto.\par
+Remover essa URL da lista dispon\'edvel.\par
+\cf0\par
+\cf1 3.3 Tratamento de empate\par
+Se duas URLs tiverem o mesmo score:\par
+Usar soma total de scores ou ordem original do arquivo como desempate.\par
+\par
+4 Interface de resultados\par
+4.1 Criar nova grid de resultados\par
+Colunas:\par
+Assunto\par
+URL\par
+Score\par
+\par
+4.2 Atualizar resultados durante processamento\par
+Ap\'f3s cada URL processada recalcular os vencedores.\par
+Atualizar a grid com os melhores resultados at\'e9 o momento.\par
+\cf0\par
+\cf1 5 Intera\'e7\'e3o com a URL\par
+5.1 Clique na URL\par
+Copiar URL para \'e1rea de transfer\'eancia.\par
+Alterar cor da linha para laranja claro.\par
+Registrar a\'e7\'e3o no log.\par
+\par
+5.2 Remo\'e7\'e3o do arquivo\par
+Se a URL veio do arquivo de entrada, remover a linha correspondente do arquivo.\par
+N\'e3o remover a linha da grid.\par
+\cf0\par
+\cf1 6 Relat\'f3rio final\par
+6.1 Criar arquivo de relat\'f3rio\par
+Salvar lista de assuntos com URL selecionada e score.\par
+Salvar resumo de processamento.\par
+\cf0\par
+\cf1 6.2 Incluir erros\par
+Registrar dom\'ednios que falharam no scraping.\par
+\par
+6.3 Interface\par
+Adicionar bot\'e3o para abrir o relat\'f3rio no bloco de notas.\par
+\cf0\par
+7 Logs\par
+7.1 Log sobrescrito ao iniciar processamento.\par
+7.2 Registrar scraping, chamadas da IA e sele\'e7\'e3o de URLs.\par
+7.3 Adicionar bot\'e3o para abrir o log no bloco de notas.\par
+\par
+8 Melhorias futuras\par
+8.1 Cache de scraping.\par
+8.2 Controle de tokens consumidos pela API.\par
+8.3 Remo\'e7\'e3o autom\'e1tica de cache antigo.\par
+8.4 Otimiza\'e7\'e3o de paralelismo.\par
+\par
+Se quiser, no pr\'f3ximo passo posso tamb\'e9m te mostrar duas coisas importantes que v\'e3o evitar muitos bugs nesse novo sistema:\par
+\par
+1. o algoritmo exato de sele\'e7\'e3o de URLs por assunto (em C#).\par
+2. a estrutura ideal das classes para guardar os scores.\b\fs22\par
 }

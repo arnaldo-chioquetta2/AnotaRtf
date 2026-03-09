@@ -1,12 +1,11 @@
-﻿using AtcCtrl;
-using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
+﻿using System;
+using AtcCtrl;
 using System.IO;
 using System.Linq;
+using System.Drawing;
+using Microsoft.Win32;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace AnotaRtf
 {
@@ -17,17 +16,14 @@ namespace AnotaRtf
         private const string REGISTRY_KEY = @"AnoteitorRTF\MyApp";
         private const string TABS_SUBKEY = @"AnoteitorRTF\MyApp\Tabs";
         private bool firstShown = true;
-        private TabPage contextMenuTab;
 
         public Form1()
         {
-            InitializeComponent();
-            tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
+            InitializeComponXent();
+            tabControl.SelectedIndexCXhanged += TabControl_SelectedIndexChanged;
             tabControl.MouseDoubleClick += TabControl_MouseDoubleClick;
-            this.KeyDown += Form1_KeyDown;
+            this.KeyDown += Form1_KeyDXown;
             this.KeyPreview = true;
-
-            CreateTabContextMenu();
 
             // Extrai apenas a parte numérica da versão (remove tudo após o primeiro '+')
             string versionStr = Application.ProductVersion.Split('+')[0];
@@ -51,91 +47,6 @@ namespace AnotaRtf
                     break;
             }
 
-        }
-
-        private void CreateTabContextMenu()
-        {
-            ContextMenuStrip tabContextMenu = new ContextMenuStrip();
-
-            ToolStripMenuItem deleteTabItem = new ToolStripMenuItem("Excluir Aba")
-            {
-                ShortcutKeys = Keys.Delete
-            };
-            deleteTabItem.Click += DeleteTabMenuItem_Click;
-            tabContextMenu.Items.Add(deleteTabItem);
-
-            // 🔑 Detecta qual aba está sob o cursor NO MOMENTO DA ABERTURA do menu
-            tabContextMenu.Opening += (s, e) =>
-            {
-                // Converte posição do mouse para coordenadas do TabControl
-                Point cursorPos = tabControl.PointToClient(Cursor.Position);
-
-                // Detecta qual aba está sob o cursor
-                for (int i = 0; i < tabControl.TabCount; i++)
-                {
-                    Rectangle tabRect = tabControl.GetTabRect(i);
-                    if (tabRect.Contains(cursorPos))
-                    {
-                        TabPage tabUnderCursor = tabControl.TabPages[i];
-                        contextMenuTab = (tabUnderCursor != placeholderTab) ? tabUnderCursor : null;
-                        Debug.WriteLine($"[v1.4.6] Aba detectada sob cursor: '{(contextMenuTab != null ? contextMenuTab.Text : "null")}' (índice {i})");
-                        return;
-                    }
-                }
-
-                // Se não encontrou aba, limpa a referência
-                contextMenuTab = null;
-                Debug.WriteLine("[v1.4.6] Nenhuma aba detectada sob cursor");
-            };
-
-            tabControl.ContextMenuStrip = tabContextMenu;
-        }
-
-        private void DeleteTabMenuItem_Click(object sender, EventArgs e)
-        {
-            Debug.WriteLine($"[v1.4.6] DeleteTabMenuItem_Click acionado");
-            Debug.WriteLine($"[v1.4.6] contextMenuTab = {(contextMenuTab != null ? contextMenuTab.Text : "null")}");
-
-            if (contextMenuTab == null || contextMenuTab == placeholderTab)
-            {
-                MessageBox.Show("Clique com o botão direito diretamente sobre uma aba para excluí-la.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            if (MessageBox.Show(
-                $"Excluir a aba '{contextMenuTab.Text}' permanentemente?",
-                "Confirmação",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning,
-                MessageBoxDefaultButton.Button2) == DialogResult.Yes)
-            {
-                Debug.WriteLine($"[v1.4.6] Excluindo aba: '{contextMenuTab.Text}'");
-                DeleteTab(contextMenuTab);
-            }
-        }
-
-        private void DeleteTab(TabPage tab)
-        {
-            if (tab == null || tab == placeholderTab) return;
-
-            ATCRTF editor = tab.Controls.OfType<ATCRTF>().FirstOrDefault();
-            if (editor != null)
-            {
-                editor.SalvaRTF();
-                try
-                {
-                    if (File.Exists(editor.caminhoDoArquivo))
-                        File.Delete(editor.caminhoDoArquivo);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"[v1.4.4] Erro ao excluir arquivo: {ex.Message}");
-                }
-            }
-
-            tabControl.TabPages.Remove(tab);
-            SaveTabs();
-            Debug.WriteLine($"[v1.4.4] Aba excluída: '{tab.Text}'");
         }
 
         private void Form1_Shown(object sender, EventArgs e)
