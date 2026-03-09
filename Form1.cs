@@ -59,7 +59,7 @@ namespace AnotaRtf
 
             ToolStripMenuItem deleteTabItem = new ToolStripMenuItem("Excluir Aba")
             {
-                ShortcutKeys = Keys.Delete
+                //ShortcutKeys = Keys.Delete
             };
             deleteTabItem.Click += DeleteTabMenuItem_Click;
             tabContextMenu.Items.Add(deleteTabItem);
