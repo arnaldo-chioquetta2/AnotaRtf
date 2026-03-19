@@ -1,7 +1,289 @@
-{\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil Arial;}{\f1\fnil\fcharset0 Arial;}}
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Arial;}}
+{\colortbl ;\red0\green128\blue0;\red0\green0\blue0;}
 {\*\generator Riched20 10.0.19041}\viewkind4\uc1 
-\pard\f0\fs20\lang1046 Renan\f1\par
-\f0 Claube\f1    ff\f0\par
-Andr\f1\'e9 saroba\par
-Marcos Trindade\f0\par
+\pard\cf1\fs28\lang1046 Etapa 4\par
+\par
+Implementar o gateway MercadoPago\par
+\par
+Subetapa 4.1\par
+\par
+Criar o MercadoPagoService.\par
+Resumo encapsular cria\'e7\'e3o de Pix, consulta de pagamento e interpreta\'e7\'e3o de resposta.\par
+Fonte prov\'e1vel App\\Services\\MercadoPagoService.\par
+\par
+Subetapa 4.2\par
+\par
+Montar o payload m\'ednimo obrigat\'f3rio.\par
+Resumo enviar valor, descri\'e7\'e3o, email e CPF ou CNPJ sem m\'e1scara.\par
+Fonte prov\'e1vel MercadoPagoService, dados do cliente, pedido.\par
+\par
+Subetapa 4.3\par
+\par
+Aplicar idempot\'eancia na cria\'e7\'e3o.\par
+Resumo gerar e salvar uma chave \'fanica por tentativa para evitar cobran\'e7a duplicada.\par
+Fonte prov\'e1vel MercadoPagoService, tt_pedido ou tabela de pagamentos.\par
+\cf2\par
+Subetapa 4.4\par
+\par
+Padronizar o retorno para o frontend.\par
+Resumo devolver qr_code, qr_code_base64, copia e cola, payment_id e expira\'e7\'e3o.\par
+Fonte prov\'e1vel MercadoPagoService, controller do checkout.\par
+\par
+Etapa 5\par
+\par
+Trocar o ponto de entrada do checkout\par
+\par
+Subetapa 5.1\par
+\par
+Remover a chamada direta para OpenPix.\par
+Resumo o controller passa a chamar o resolvedor de gateway.\par
+Fonte prov\'e1vel PedidoController.\par
+\par
+Subetapa 5.2\par
+\par
+Salvar o v\'ednculo do pagamento de forma gen\'e9rica.\par
+Resumo registrar gateway, id externo, status externo, idempotency_key e expiration_at.\par
+Fonte prov\'e1vel tt_pedido, migration nova.\par
+\par
+Subetapa 5.3\par
+\par
+Atualizar o pedido para aguardando pagamento.\par
+Resumo o pedido entra em estado de espera sem efetivar financeiro.\par
+Fonte prov\'e1vel PedidoController, tt_pedido.\par
+\par
+Etapa 6\par
+\par
+Revisar persist\'eancia do pagamento\par
+\par
+Subetapa 6.1\par
+\par
+Decidir entre colunas no pedido ou tabela pr\'f3pria.\par
+Resumo curto prazo pode usar tt_pedido, m\'e9dio prazo pede tabela de transa\'e7\'f5es.\par
+Fonte prov\'e1vel tt_pedido, migration nova.\par
+\par
+Subetapa 6.2\par
+\par
+Adicionar campos gen\'e9ricos de gateway.\par
+Resumo evitar nomes como correlationID ou paymentId presos a um provedor s\'f3.\par
+Fonte prov\'e1vel tt_pedido, migration.\par
+\par
+Subetapa 6.3\par
+\par
+Registrar hist\'f3rico m\'ednimo de mudan\'e7a de status.\par
+Resumo guardar rastreabilidade do pagamento e do pedido.\par
+Fonte prov\'e1vel tabela nova de pagamentos ou logs.\par
+\par
+Etapa 7\par
+\par
+Revisar o frontend do Pix\par
+\par
+Subetapa 7.1\par
+\par
+Retirar depend\'eancia do script OpenPix.\par
+Resumo a tela PagtoPix n\'e3o deve mais depender do plugin externo da OpenPix.\par
+Fonte prov\'e1vel resources/views/pedido/PagtoPix.blade.php.\par
+\par
+Subetapa 7.2\par
+\par
+Renderizar QR Code com dados internos.\par
+Resumo usar imagem base64 e c\'f3digo copia e cola vindos do backend.\par
+Fonte prov\'e1vel PagtoPix.blade.php, controller do checkout.\par
+\par
+Subetapa 7.3\par
+\par
+Decidir como acompanhar o status.\par
+Resumo manter polling interno no in\'edcio pode reduzir risco.\par
+Fonte prov\'e1vel endpoint interno novo, PagtoPix.blade.php.\par
+\par
+Subetapa 7.4\par
+\par
+Preservar a experi\'eancia atual do resumo.\par
+Resumo manter exibi\'e7\'e3o do ConfirmCode sem mudar o fluxo do cliente.\par
+Fonte prov\'e1vel resumo.blade.php, tt_pedido.\par
+\par
+Etapa 8\par
+\par
+Implementar o webhook do MercadoPago\par
+\par
+Subetapa 8.1\par
+\par
+Criar rota p\'fablica exclusiva do MercadoPago.\par
+Resumo separar claramente o webhook novo do legado.\par
+Fonte prov\'e1vel routes/web.php ou routes/api.php, controller dedicado.\par
+\par
+Subetapa 8.2\par
+\par
+Validar a assinatura do webhook.\par
+Resumo rejeitar qualquer chamada com assinatura inv\'e1lida.\par
+Fonte prov\'e1vel WebhookController, helper de valida\'e7\'e3o.\par
+\par
+Subetapa 8.3\par
+\par
+Consultar a API ap\'f3s o webhook.\par
+Resumo usar a notifica\'e7\'e3o apenas como gatilho e confirmar o status real no MercadoPago.\par
+Fonte prov\'e1vel MercadoPagoService, WebhookController.\par
+\par
+Subetapa 8.4\par
+\par
+Atualizar o pedido sem contabilizar.\par
+Resumo approved gera pedido pago e ConfirmCode, mas n\'e3o finaliza financeiro.\par
+Fonte prov\'e1vel WebhookController, tt_pedido.\par
+\par
+Etapa 9\par
+\par
+Corrigir o fluxo de entrega e conclus\'e3o\par
+\par
+Subetapa 9.1\par
+\par
+Revisar o DeliveryController.\par
+Resumo corrigir chave do pedido, import da classe Entrega e chamada do m\'e9todo de finaliza\'e7\'e3o.\par
+Fonte prov\'e1vel DeliveryController, Entrega.php.\par
+\par
+Subetapa 9.2\par
+\par
+Criar um m\'e9todo p\'fablico \'fanico de conclus\'e3o.\par
+Resumo a entrega confirmada deve disparar uma \'fanica rotina oficial de contabiliza\'e7\'e3o.\par
+Fonte prov\'e1vel Entrega.php ou service espec\'edfico de fechamento.\par
+\par
+Subetapa 9.3\par
+\par
+Garantir idempot\'eancia na conclus\'e3o.\par
+Resumo impedir dupla contabiliza\'e7\'e3o se o c\'f3digo for reenviado ou repetido.\par
+Fonte prov\'e1vel DeliveryController, tt_pedido, financeiro.\par
+\par
+Etapa 10\par
+\par
+Generalizar financeiro e pagadora\par
+\par
+Subetapa 10.1\par
+\par
+Remover l\'f3gica presa ao nome OpenPix.\par
+Resumo taxa e saldo devem ser tratados como custo e origem do gateway.\par
+Fonte prov\'e1vel Entrega.php, Adm.php, ContaMov, tt_pagadoras.\par
+\par
+Subetapa 10.2\par
+\par
+Revisar saldo por pagadora.\par
+Resumo decidir se cada gateway ter\'e1 saldo pr\'f3prio ou saldo consolidado com origem.\par
+Fonte prov\'e1vel tt_pagadoras, dashboard financeiro.\par
+\par
+Subetapa 10.3\par
+\par
+Revisar resgates e custos.\par
+Resumo a liquida\'e7\'e3o n\'e3o pode depender do modelo antigo da OpenPix.\par
+Fonte prov\'e1vel ContaMov::Resgata, financeiro.\par
+\par
+Etapa 11\par
+\par
+Padronizar configura\'e7\'e3o e credenciais\par
+\par
+Subetapa 11.1\par
+\par
+Adicionar vari\'e1veis do MercadoPago.\par
+Resumo separar public key, access token, webhook secret e ambiente.\par
+Fonte prov\'e1vel .env, config/services.php.\par
+\par
+Subetapa 11.2\par
+\par
+Centralizar leitura das credenciais.\par
+Resumo nenhum controller deve acessar env diretamente para regra de neg\'f3cio.\par
+Fonte prov\'e1vel config, services.\par
+\par
+Subetapa 11.3\par
+\par
+Criar uma chave de gateway padr\'e3o.\par
+Resumo permitir rollout e rollback simples sem alterar c\'f3digo.\par
+Fonte prov\'e1vel tt_config ou config custom.\par
+\par
+Etapa 12\par
+\par
+Logs e auditoria\par
+\par
+Subetapa 12.1\par
+\par
+Logar cria\'e7\'e3o da cobran\'e7a.\par
+Resumo registrar pedido, gateway, valor, id externo e idempot\'eancia.\par
+Fonte prov\'e1vel LoggerService, service de pagamento.\par
+\par
+Subetapa 12.2\par
+\par
+Logar webhook e mudan\'e7a de status.\par
+Resumo registrar origem, assinatura validada e transi\'e7\'e3o de status.\par
+Fonte prov\'e1vel LoggerService, WebhookController.\par
+\par
+Subetapa 12.3\par
+\par
+Logar conclus\'e3o da entrega.\par
+Resumo registrar confirma\'e7\'e3o do c\'f3digo e efetiva\'e7\'e3o financeira final.\par
+Fonte prov\'e1vel DeliveryController, Entrega.php.\par
+\par
+Etapa 13\par
+\par
+Testes t\'e9cnicos\par
+\par
+Subetapa 13.1\par
+\par
+Testar cria\'e7\'e3o do Pix no MercadoPago.\par
+Resumo validar payload, identifica\'e7\'e3o fiscal e retorno do QR.\par
+Fonte prov\'e1vel MercadoPagoService, checkout.\par
+\par
+Subetapa 13.2\par
+\par
+Testar webhook aprovado e rejeitado.\par
+Resumo validar assinatura, consulta posterior e transi\'e7\'e3o correta do pedido.\par
+Fonte prov\'e1vel WebhookController.\par
+\par
+Subetapa 13.3\par
+\par
+Testar idempot\'eancia.\par
+Resumo repetir cria\'e7\'e3o, webhook e confirma\'e7\'e3o do c\'f3digo sem duplicidade.\par
+Fonte prov\'e1vel service de pagamento, DeliveryController.\par
+\par
+Subetapa 13.4\par
+\par
+Testar fluxo ponta a ponta.\par
+Resumo pedido, pagamento, ConfirmCode, entrega e contabiliza\'e7\'e3o final.\par
+Fonte prov\'e1vel PagtoPix.blade.php, webhook, DeliveryController, Entrega.php.\par
+\par
+Etapa 14\par
+\par
+Limpeza final do legado\par
+\par
+Subetapa 14.1\par
+\par
+Desativar o fluxo antigo de OpenPix.\par
+Resumo remover o legado do caminho principal sem apagar tudo no primeiro deploy.\par
+Fonte prov\'e1vel OpenPixController, rotas, views.\par
+\par
+Subetapa 14.2\par
+\par
+Renomear conceitos antigos.\par
+Resumo trocar nomes presos a OpenPix por nomes neutros de gateway.\par
+Fonte prov\'e1vel c\'f3digo, banco, dashboard.\par
+\par
+Subetapa 14.3\par
+\par
+Remover sobras de Assas e OpenPix ap\'f3s estabiliza\'e7\'e3o.\par
+Resumo limpar o que n\'e3o fizer mais parte da arquitetura final.\par
+Fonte prov\'e1vel services, controllers, config, views.\par
+\par
+Conclus\'e3o da revis\'e3o\par
+\par
+O plano revisado muda a ordem da implementa\'e7\'e3o.\par
+\par
+Antes o foco estava em plugar MercadoPago.\par
+\par
+Agora o foco correto \'e9 primeiro consertar a responsabilidade de cada etapa do fluxo, depois criar a camada neutra de gateway e s\'f3 ent\'e3o finalizar a integra\'e7\'e3o do MercadoPago.\par
+\par
+A nova sequ\'eancia ideal \'e9 esta\par
+\par
+Primeiro corrigir o fluxo pedido pago versus pedido conclu\'eddo\par
+\par
+Depois criar o resolvedor de gateway\par
+\par
+Depois integrar MercadoPago\par
+\par
+Depois revisar financeiro e legado\par
+\par
+Se voc\'ea quiser, no pr\'f3ximo passo eu transformo esse plano revisado em ordem exata de desenvolvimento arquivo por arquivo.\par
 }

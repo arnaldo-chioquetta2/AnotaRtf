@@ -18,6 +18,7 @@ namespace AnotaRtf
         private const string TABS_SUBKEY = @"AnoteitorRTF\MyApp\Tabs";
         private bool firstShown = true;
         private TabPage contextMenuTab;
+        private int nextFileIndex = 1; // ← Próximo índice de arquivo disponível
 
         public Form1()
         {
@@ -253,14 +254,7 @@ namespace AnotaRtf
                     ensureVisibleTimer.Stop();
                 };
             //}
-        }
-
-        //private bool IsWindowVisible()
-        //{
-        //    return this.WindowState != FormWindowState.Minimized &&
-        //           this.IsHandleCreated &&
-        //           !this.IsDisposed;
-        //}
+        }        
 
         private void SetupPlaceholder()
         {
@@ -403,22 +397,23 @@ namespace AnotaRtf
 
         private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Evita disparar evento durante carregamento inicial
             if (tabControl.TabPages.Count == 1) return;
 
-            // Só cria nova aba se o placeholder "+" estiver selecionado
             if (tabControl.SelectedTab == placeholderTab)
             {
-                int realTabCount = tabControl.TabPages.Count - 1; // Exclui "+"
-                string[] numbers = { "Um", "Dois", "Três", "Quatro", "Cinco", "Seis", "Sete", "Oito", "Nove", "Dez" };
-                string numberName = realTabCount < numbers.Length
-                    ? numbers[realTabCount]
-                    : (realTabCount + 1).ToString();
+                // 🔑 Usa nextFileIndex (não realTabCount!)
+                int fileIndex = nextFileIndex++;
 
-                CreateTab(realTabCount + 1, numberName);
-                tabControl.SelectedTab = tabControl.TabPages[tabControl.TabPages.Count - 2]; // Seleciona a nova aba
+                // Gera nome baseado na contagem visual (apenas para exibição)
+                int visualCount = tabControl.TabPages.Count - 1;
+                string[] numbers = { "Um", "Dois", "Três", "Quatro", "Cinco", "Seis", "Sete", "Oito", "Nove", "Dez" };
+                string displayName = visualCount < numbers.Length ? numbers[visualCount] : visualCount.ToString();
+
+                CreateTab(fileIndex, displayName);
+                tabControl.SelectedTab = tabControl.TabPages[tabControl.TabPages.Count - 2];
                 SaveTabs();
-                Debug.WriteLine($"[v1.3.5] Nova aba criada: '{numberName}'");
+
+                Debug.WriteLine($"[v1.4.8] Nova aba criada: '{displayName}' com fileIndex={fileIndex}");
             }
         }
 
@@ -429,11 +424,9 @@ namespace AnotaRtf
                 using (RegistryKey parentKey = Registry.CurrentUser.CreateSubKey(REGISTRY_KEY, true))
                 using (RegistryKey tabsKey = parentKey.CreateSubKey("Tabs", true))
                 {
-                    // Limpa subchaves antigas
                     foreach (string name in tabsKey.GetSubKeyNames().ToArray())
                         tabsKey.DeleteSubKey(name);
 
-                    // Salva abas reais (excluindo "+")
                     int index = 1;
                     foreach (TabPage tab in tabControl.TabPages)
                     {
@@ -448,9 +441,9 @@ namespace AnotaRtf
                                     using (RegistryKey tabKey = tabsKey.CreateSubKey($"tab{index}"))
                                     {
                                         tabKey.SetValue("DisplayName", tab.Text);
-                                        tabKey.SetValue("FileIndex", fileIndex);
+                                        tabKey.SetValue("FileIndex", fileIndex); // ← Salva o índice real do arquivo
                                     }
-                                    Debug.WriteLine($"[v1.3.3] Salva: '{tab.Text}' -> anotacao{fileIndex}.rtf");
+                                    Debug.WriteLine($"[v1.4.8] Salva: '{tab.Text}' → anotacao{fileIndex}.rtf");
                                     index++;
                                 }
                             }
@@ -460,10 +453,9 @@ namespace AnotaRtf
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[v1.3.3] ERRO ao salvar: {ex.Message}");
+                Debug.WriteLine($"[v1.4.8] ERRO ao salvar: {ex.Message}");
             }
         }
-
         private void TabControl_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             for (int i = 0; i < tabControl.TabCount; i++)
