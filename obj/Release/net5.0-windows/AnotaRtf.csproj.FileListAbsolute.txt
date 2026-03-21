@@ -61,8 +61,6 @@ D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\obj\Release\net5.0-windows\AnotaRtf.Form
 D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\obj\Release\net5.0-windows\AnotaRtf.Properties.Resources.resources
 D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\obj\Release\net5.0-windows\AnotaRtf.csproj.GenerateResource.cache
 D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\obj\Release\net5.0-windows\AnotaRtf.GeneratedMSBuildEditorConfig.editorconfig
-D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\obj\Release\net5.0-windows\AnotaRtf.AssemblyInfoInputs.cache
-D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\obj\Release\net5.0-windows\AnotaRtf.AssemblyInfo.cs
 D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\obj\Release\net5.0-windows\AnotaRtf.csproj.CoreCompileInputs.cache
 D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\obj\Release\net5.0-windows\AnotaRtf.dll
 D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\obj\Release\net5.0-windows\ref\AnotaRtf.dll

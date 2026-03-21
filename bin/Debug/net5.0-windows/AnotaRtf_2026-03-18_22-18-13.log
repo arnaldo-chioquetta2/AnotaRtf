@@ -1,0 +1,30 @@
+[22:18:13.640] ========================================
+[22:18:13.651] AnoteitoRtf - Início da Sessão
+[22:18:13.654] Versão: 1.4.8.0
+[22:18:13.659] Data/Hora: 18/03/2026 22:18:13
+[22:18:13.661] Arquivo: D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Debug\net5.0-windows\AnotaRtf_2026-03-18_22-18-13.log
+[22:18:13.663] ========================================
+[22:18:13.666] Aplicativo iniciado
+[22:18:13.750] Form1_Load iniciado
+[22:18:13.776] [v1.3.5] Carregando abas...
+[22:18:13.788] [v1.3.5] Encontradas 6 abas no Registro
+[22:18:13.917] [v1.3.3] ✅ Aba criada: 'Um' | Controles internos: 2
+[22:18:13.926] [v1.3.5] ✓ Aba 'Um' carregada (anotacao1.rtf)
+[22:18:13.958] [v1.3.3] ✅ Aba criada: 'Assas' | Controles internos: 2
+[22:18:13.992] [v1.3.5] ✓ Aba 'Assas' carregada (anotacao2.rtf)
+[22:18:14.013] [v1.3.3] ✅ Aba criada: 'Teletudo' | Controles internos: 2
+[22:18:14.019] [v1.3.5] ✓ Aba 'Teletudo' carregada (anotacao6.rtf)
+[22:18:14.068] [v1.3.3] ✅ Aba criada: 'MercadoPago' | Controles internos: 2
+[22:18:14.071] [v1.3.5] ✓ Aba 'MercadoPago' carregada (anotacao4.rtf)
+[22:18:14.120] [v1.3.3] ✅ Aba criada: '4.3' | Controles internos: 2
+[22:18:14.127] [v1.3.5] ✓ Aba '4.3' carregada (anotacao5.rtf)
+[22:18:14.161] [v1.3.3] ✅ Aba criada: 'Seis' | Controles internos: 2
+[22:18:14.163] [v1.3.5] ✓ Aba 'Seis' carregada (anotacao6.rtf)
+[22:18:14.169] [v1.3.5] Forçada seleção da primeira aba
+[22:18:14.175] [v1.4.3] Aba restaurada: índice 2 ('Teletudo')
+[22:18:14.186] Form1_Load carregado {versao}
+[22:18:14.239] [v1.4.0] Janela não visível — agendando correção com timer
+[22:18:14.256] [v1.4.2] Form1_Shown | firstShown=True, WindowState=Normal
+[22:18:14.351] [v1.4.0] Timer acionado — forçando visibilidade
+[22:27:11.075] [v1.4.0] Janela não visível — agendando correção com timer
+[22:27:11.186] [v1.4.0] Timer acionado — forçando visibilidade

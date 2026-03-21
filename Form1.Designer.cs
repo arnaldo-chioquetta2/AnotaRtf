@@ -94,7 +94,7 @@ namespace AnotaRtf
             this.Text = "AnoteitoRtf";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.Activated += new System.EventHandler(this.Form1_Activated);
+            //this.Activated += new System.EventHandler(this.Form1_Activated);
             this.Shown += Form1_Shown;
             this.tabControl.ResumeLayout(false);
             this.tb1.ResumeLayout(false);

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows.Forms;
 
 namespace AnotaRtf
@@ -11,6 +11,8 @@ namespace AnotaRtf
         [STAThread]
         static void Main()
         {
+            Logger.Initialize(); // ← ← ← OBRIGATÓRIO para criar o log
+            Logger.Write("Aplicativo iniciado");
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

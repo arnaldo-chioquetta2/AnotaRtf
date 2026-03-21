@@ -1,268 +1,75 @@
-﻿using AtcCtrl;
-using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
+﻿using System;
+using AtcCtrl;
 using System.IO;
 using System.Linq;
+using System.Drawing;
+using Microsoft.Win32;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace AnotaRtf
 {
     public partial class Form1 : Form
     {
         private TabPage placeholderTab;
-        private Timer ensureVisibleTimer;
+        private TabPage contextMenuTab;
+        private int nextFileIndex = 1;
+        private bool firstShown = true;
         private const string REGISTRY_KEY = @"AnoteitorRTF\MyApp";
         private const string TABS_SUBKEY = @"AnoteitorRTF\MyApp\Tabs";
-        private bool firstShown = true;
-        private TabPage contextMenuTab;
-        private int nextFileIndex = 1; // ← Próximo índice de arquivo disponível
 
         public Form1()
         {
             InitializeComponent();
             tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
             tabControl.MouseDoubleClick += TabControl_MouseDoubleClick;
-            //this.KeyDown += Form1_KeyDown;
-            this.KeyPreview = true;
-
+            tabControl.MouseDown += TabControl_MouseDown;
+            this.Shown += Form1_Shown;
+            this.Resize += Form1_Resize;
             CreateTabContextMenu();
-
-            // Extrai apenas a parte numérica da versão (remove tudo após o primeiro '+')
-            string versionStr = Application.ProductVersion.Split('+')[0];
-
-            // Garante que tenha pelo menos major.minor
-            string[] parts = versionStr.Split('.');
-
-            switch (parts.Length)
-            {
-                case 1:
-                    this.Text = $"AnoteitoRtf v{parts[0]}";
-                    break;
-                case 2:
-                    this.Text = $"AnoteitoRtf v{parts[0]}.{parts[1]}";
-                    break;
-                case 3:
-                    this.Text = $"AnoteitoRtf v{parts[0]}.{parts[1]}.{parts[2]}";
-                    break;
-                default:
-                    this.Text = "AnoteitoRtf"; // Fallback seguro
-                    break;
-            }
-
-        }
-
-        private void CreateTabContextMenu()
-        {
-            ContextMenuStrip tabContextMenu = new ContextMenuStrip();
-
-            ToolStripMenuItem deleteTabItem = new ToolStripMenuItem("Excluir Aba")
-            {
-                //ShortcutKeys = Keys.Delete
-            };
-            deleteTabItem.Click += DeleteTabMenuItem_Click;
-            tabContextMenu.Items.Add(deleteTabItem);
-
-            // 🔑 Detecta qual aba está sob o cursor NO MOMENTO DA ABERTURA do menu
-            tabContextMenu.Opening += (s, e) =>
-            {
-                // Converte posição do mouse para coordenadas do TabControl
-                Point cursorPos = tabControl.PointToClient(Cursor.Position);
-
-                // Detecta qual aba está sob o cursor
-                for (int i = 0; i < tabControl.TabCount; i++)
-                {
-                    Rectangle tabRect = tabControl.GetTabRect(i);
-                    if (tabRect.Contains(cursorPos))
-                    {
-                        TabPage tabUnderCursor = tabControl.TabPages[i];
-                        contextMenuTab = (tabUnderCursor != placeholderTab) ? tabUnderCursor : null;
-                        Debug.WriteLine($"[v1.4.6] Aba detectada sob cursor: '{(contextMenuTab != null ? contextMenuTab.Text : "null")}' (índice {i})");
-                        return;
-                    }
-                }
-
-                // Se não encontrou aba, limpa a referência
-                contextMenuTab = null;
-                Debug.WriteLine("[v1.4.6] Nenhuma aba detectada sob cursor");
-            };
-
-            tabControl.ContextMenuStrip = tabContextMenu;
-        }
-
-        private void DeleteTabMenuItem_Click(object sender, EventArgs e)
-        {
-            Debug.WriteLine($"[v1.4.6] DeleteTabMenuItem_Click acionado");
-            Debug.WriteLine($"[v1.4.6] contextMenuTab = {(contextMenuTab != null ? contextMenuTab.Text : "null")}");
-
-            if (contextMenuTab == null || contextMenuTab == placeholderTab)
-            {
-                MessageBox.Show("Clique com o botão direito diretamente sobre uma aba para excluí-la.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            if (MessageBox.Show(
-                $"Excluir a aba '{contextMenuTab.Text}' permanentemente?",
-                "Confirmação",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning,
-                MessageBoxDefaultButton.Button2) == DialogResult.Yes)
-            {
-                Debug.WriteLine($"[v1.4.6] Excluindo aba: '{contextMenuTab.Text}'");
-                DeleteTab(contextMenuTab);
-            }
-        }
-
-        private void DeleteTab(TabPage tab)
-        {
-            if (tab == null || tab == placeholderTab) return;
-
-            ATCRTF editor = tab.Controls.OfType<ATCRTF>().FirstOrDefault();
-            if (editor != null)
-            {
-                editor.SalvaRTF();
-                try
-                {
-                    if (File.Exists(editor.caminhoDoArquivo))
-                        File.Delete(editor.caminhoDoArquivo);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"[v1.4.4] Erro ao excluir arquivo: {ex.Message}");
-                }
-            }
-
-            tabControl.TabPages.Remove(tab);
-            SaveTabs();
-            Debug.WriteLine($"[v1.4.4] Aba excluída: '{tab.Text}'");
-        }
-
-        private void Form1_Shown(object sender, EventArgs e)
-        {
-            Debug.WriteLine($"[v1.4.2] Form1_Shown | firstShown={firstShown}, WindowState={this.WindowState}");
-
-            if (firstShown)
-            {
-                firstShown = false;
-
-                // Só restaura se NÃO estiver minimizada (respeita intenção do usuário)
-                if (this.WindowState != FormWindowState.Minimized)
-                {
-                    this.WindowState = FormWindowState.Normal;
-                    this.BringToFront();
-                    this.Activate();
-
-                    // Valida posição apenas na primeira exibição
-                    Rectangle screenBounds = Screen.PrimaryScreen.WorkingArea;
-                    if (this.Left < 0 || this.Top < 0 ||
-                        this.Right > screenBounds.Right ||
-                        this.Bottom > screenBounds.Bottom)
-                    {
-                        Debug.WriteLine("[v1.4.2] Janela fora da tela — centralizando");
-                        this.StartPosition = FormStartPosition.CenterScreen;
-                        this.WindowState = FormWindowState.Normal;
-                    }
-                }
-            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Debug.WriteLine("[v1.4.3] Form1_Load iniciado");
+
+            try
+            {
+                string testPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "teste_escrita.txt");
+                File.WriteAllText(testPath, "Teste de escrita funcionou!");
+                Debug.WriteLine($"[TESTE] Arquivo criado: {testPath}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+            Logger.Write("[v1.5.1] Form1_Load iniciado");
+
+            // 🔑 DIAGNÓSTICO: Log das informações do sistema
+            Logger.Write($"[v1.5.1] Base Directory: {AppDomain.CurrentDomain.BaseDirectory}");
+
+            var allRtf = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "anotacao*.rtf");
+            Logger.Write($"[v1.5.1] Arquivos RTF encontrados: {allRtf.Length}");
+            foreach (var file in allRtf)
+            {
+                Logger.Write($"[v1.5.1]   → {Path.GetFileName(file)}");
+            }
 
             LoadWindowPosition();
             SetupPlaceholder();
             LoadTabs();
-
-            // 🔑 Restaura aba ativa após carregar todas
             RestoreActiveTab();
 
-            // Atualiza título com versão
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             this.Text = $"AnoteitoRtf v{version.Major}.{version.Minor}";
+            Logger.Write($"[v1.5.1] Título definido: {this.Text}");
+            Logger.Write("[v1.5.1] Form1_Load concluído");
         }
-
-        private void RestoreActiveTab()
-        {
-            try
-            {
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(REGISTRY_KEY))
-                {
-                    if (key != null)
-                    {
-                        object value = key.GetValue("ActiveTabIndex");
-                        if (value is int savedIndex && savedIndex >= 0 && savedIndex < tabControl.TabPages.Count)
-                        {
-                            // Garante que não seleciona a aba "+"
-                            if (tabControl.TabPages[savedIndex] != placeholderTab)
-                            {
-                                tabControl.SelectedIndex = savedIndex;
-                                Debug.WriteLine($"[v1.4.3] Aba restaurada: índice {savedIndex} ('{tabControl.TabPages[savedIndex].Text}')");
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-            catch { }
-
-            // Fallback: seleciona primeira aba real
-            for (int i = 0; i < tabControl.TabPages.Count; i++)
-            {
-                if (tabControl.TabPages[i] != placeholderTab)
-                {
-                    tabControl.SelectedIndex = i;
-                    Debug.WriteLine($"[v1.4.3] Fallback: selecionada primeira aba (índice {i})");
-                    break;
-                }
-            }
-        }
-
-        private void Form1_Activated(object sender, EventArgs e)
-        {
-            EnsureWindowVisible();
-        }
-
-        private void EnsureWindowVisible()
-        {
-            // Força a janela para o estado normal (não minimizada)
-            this.WindowState = FormWindowState.Normal;
-
-            // Garante que a janela esteja no topo
-            this.BringToFront();
-            //this.Activate();
-
-            // Se a janela ainda não estiver visível após 100ms, tenta novamente
-            //if (!IsWindowVisible())
-            //{
-                Debug.WriteLine("[v1.4.0] Janela não visível — agendando correção com timer");
-
-                ensureVisibleTimer = new Timer
-                {
-                    Interval = 100, // 0.1 segundo
-                    Enabled = true
-                };
-
-                ensureVisibleTimer.Tick += (s, e) =>
-                {
-                    Debug.WriteLine("[v1.4.0] Timer acionado — forçando visibilidade");
-                    this.WindowState = FormWindowState.Normal;
-                    this.BringToFront();
-                    this.Activate();
-                    ensureVisibleTimer.Stop();
-                };
-            //}
-        }        
 
         private void SetupPlaceholder()
         {
-            // Mantém tb2 como placeholder "+", mas remove tb1 (será recriada dinamicamente)
             placeholderTab = tb2;
             placeholderTab.Text = "+";
-
-            // Remove tb1 para recriá-la como aba dinâmica
             if (tabControl.TabPages.Contains(tb1))
                 tabControl.TabPages.Remove(tb1);
         }
@@ -280,12 +87,8 @@ namespace AnotaRtf
                         int width = (int)(key.GetValue("WindowWidth") ?? this.Width);
                         int height = (int)(key.GetValue("WindowHeight") ?? this.Height);
 
-                        // Valida se as coordenadas estão dentro da área de trabalho
                         Rectangle screenBounds = Screen.PrimaryScreen.WorkingArea;
-                        bool isValid = x >= 0 && y >= 0 &&
-                                       x < screenBounds.Right &&
-                                       y < screenBounds.Bottom &&
-                                       width > 0 && height > 0;
+                        bool isValid = x >= 0 && y >= 0 && x < screenBounds.Right && y < screenBounds.Bottom && width > 0 && height > 0;
 
                         if (isValid)
                         {
@@ -297,7 +100,7 @@ namespace AnotaRtf
                         }
                         else
                         {
-                            Debug.WriteLine("[v1.4.1] Coordenadas inválidas — resetando para centro");
+                            Logger.Write("[v1.5.0] Coordenadas inválidas — centralizando");
                             this.StartPosition = FormStartPosition.CenterScreen;
                         }
                     }
@@ -308,7 +111,10 @@ namespace AnotaRtf
 
         private void LoadTabs()
         {
-            Debug.WriteLine("[v1.3.5] Carregando abas...");
+            Logger.Write("[v1.5.0] LoadTabs iniciado");
+            tabControl.TabPages.Clear();
+            tabControl.TabPages.Add(placeholderTab);
+            nextFileIndex = 1;
 
             try
             {
@@ -321,7 +127,7 @@ namespace AnotaRtf
                             .OrderBy(name => name)
                             .ToArray();
 
-                        Debug.WriteLine($"[v1.3.5] Encontradas {tabNames.Length} abas no Registro");
+                        Logger.Write($"[v1.5.0] Encontradas {tabNames.Length} abas no Registro");
 
                         foreach (string tabName in tabNames)
                         {
@@ -335,7 +141,9 @@ namespace AnotaRtf
                                     if (fileIndex > 0 && !string.IsNullOrEmpty(displayName))
                                     {
                                         CreateTab(fileIndex, displayName);
-                                        Debug.WriteLine($"[v1.3.5] ✓ Aba '{displayName}' carregada (anotacao{fileIndex}.rtf)");
+                                        if (fileIndex >= nextFileIndex)
+                                            nextFileIndex = fileIndex + 1;
+                                        Logger.Write($"[v1.5.0] ✓ Aba '{displayName}' carregada (anotacao{fileIndex}.rtf)");
                                     }
                                 }
                             }
@@ -343,36 +151,29 @@ namespace AnotaRtf
                     }
                 }
 
-                // Se nenhuma aba foi carregada, cria a primeira
-                if (tabControl.TabPages.Count == 1) // Apenas o placeholder "+"
+                if (tabControl.TabPages.Count == 1)
                 {
-                    Debug.WriteLine("[v1.3.5] Nenhuma aba encontrada - criando primeira aba");
+                    Logger.Write("[v1.5.0] Nenhuma aba encontrada - criando primeira aba");
                     CreateTab(1, "Um");
+                    nextFileIndex = 2;
                 }
 
-                // 🔑 FORÇA SELEÇÃO DA PRIMEIRA ABA (evita selecionar o placeholder "+")
-                if (tabControl.TabPages.Count > 1)
-                {
-                    tabControl.SelectedTab = tabControl.TabPages[0];
-                    Debug.WriteLine("[v1.3.5] Forçada seleção da primeira aba");
-                }
+                Logger.Write($"[v1.5.0] nextFileIndex definido para: {nextFileIndex}");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[v1.3.5] ERRO ao carregar abas: {ex.Message}");
+                Logger.WriteException(ex, "LoadTabs");
                 CreateTab(1, "Um");
+                nextFileIndex = 2;
             }
         }
 
         private void CreateTab(int fileIndex, string displayName)
         {
-            // Cria nova TabPage
-            TabPage tab = new TabPage(displayName)
-            {
-                Name = $"tab{fileIndex}"
-            };
+            Logger.Write($"[v1.5.0] CreateTab(fileIndex={fileIndex}, displayName='{displayName}')");
 
-            // Cria o componente ATCRTF DINAMICAMENTE (igual ao Designer)
+            TabPage tab = new TabPage(displayName) { Name = $"tab{fileIndex}" };
+
             ATCRTF editor = new ATCRTF
             {
                 Dock = DockStyle.Fill,
@@ -380,19 +181,12 @@ namespace AnotaRtf
                 Criptografia = false
             };
 
-            // ⚠️ CRÍTICO: Força inicialização completa do UserControl
-            editor.PerformLayout(); // Garante que controles internos sejam renderizados
-
-            // Carrega conteúdo do arquivo RTF
+            editor.PerformLayout();
             editor.Carrega();
-
-            // Adiciona o editor à aba
             tab.Controls.Add(editor);
-
-            // Insere ANTES do placeholder "+"
             tabControl.TabPages.Insert(tabControl.TabPages.Count - 1, tab);
 
-            Debug.WriteLine($"[v1.3.3] ✅ Aba criada: '{displayName}' | Controles internos: {editor.Controls.Count}");
+            Logger.Write($"[v1.5.0] ✅ Aba criada: '{displayName}' | Controles internos: {editor.Controls.Count}");
         }
 
         private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
@@ -401,10 +195,7 @@ namespace AnotaRtf
 
             if (tabControl.SelectedTab == placeholderTab)
             {
-                // 🔑 Usa nextFileIndex (não realTabCount!)
                 int fileIndex = nextFileIndex++;
-
-                // Gera nome baseado na contagem visual (apenas para exibição)
                 int visualCount = tabControl.TabPages.Count - 1;
                 string[] numbers = { "Um", "Dois", "Três", "Quatro", "Cinco", "Seis", "Sete", "Oito", "Nove", "Dez" };
                 string displayName = visualCount < numbers.Length ? numbers[visualCount] : visualCount.ToString();
@@ -413,7 +204,7 @@ namespace AnotaRtf
                 tabControl.SelectedTab = tabControl.TabPages[tabControl.TabPages.Count - 2];
                 SaveTabs();
 
-                Debug.WriteLine($"[v1.4.8] Nova aba criada: '{displayName}' com fileIndex={fileIndex}");
+                Logger.Write($"[v1.5.0] Nova aba criada: '{displayName}' com fileIndex={fileIndex}");
             }
         }
 
@@ -441,9 +232,9 @@ namespace AnotaRtf
                                     using (RegistryKey tabKey = tabsKey.CreateSubKey($"tab{index}"))
                                     {
                                         tabKey.SetValue("DisplayName", tab.Text);
-                                        tabKey.SetValue("FileIndex", fileIndex); // ← Salva o índice real do arquivo
+                                        tabKey.SetValue("FileIndex", fileIndex);
                                     }
-                                    Debug.WriteLine($"[v1.4.8] Salva: '{tab.Text}' → anotacao{fileIndex}.rtf");
+                                    Logger.Write($"[v1.5.0] Salva: '{tab.Text}' → anotacao{fileIndex}.rtf");
                                     index++;
                                 }
                             }
@@ -453,9 +244,126 @@ namespace AnotaRtf
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[v1.4.8] ERRO ao salvar: {ex.Message}");
+                Logger.WriteException(ex, "SaveTabs");
             }
         }
+
+        private void RestoreActiveTab()
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(REGISTRY_KEY))
+                {
+                    if (key != null)
+                    {
+                        object value = key.GetValue("ActiveTabIndex");
+                        if (value is int savedIndex && savedIndex >= 0 && savedIndex < tabControl.TabPages.Count)
+                        {
+                            if (tabControl.TabPages[savedIndex] != placeholderTab)
+                            {
+                                tabControl.SelectedIndex = savedIndex;
+                                Logger.Write($"[v1.5.0] Aba restaurada: índice {savedIndex} ('{tabControl.TabPages[savedIndex].Text}')");
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            for (int i = 0; i < tabControl.TabPages.Count; i++)
+            {
+                if (tabControl.TabPages[i] != placeholderTab)
+                {
+                    tabControl.SelectedIndex = i;
+                    Logger.Write($"[v1.5.0] Fallback: selecionada primeira aba (índice {i})");
+                    break;
+                }
+            }
+        }
+
+        private void CreateTabContextMenu()
+        {
+            ContextMenuStrip tabContextMenu = new ContextMenuStrip();
+            ToolStripMenuItem deleteTabItem = new ToolStripMenuItem("Excluir Aba");
+            deleteTabItem.Click += DeleteTabMenuItem_Click;
+            tabContextMenu.Items.Add(deleteTabItem);
+
+            tabContextMenu.Opening += (s, e) =>
+            {
+                Point cursorPos = tabControl.PointToClient(Cursor.Position);
+                for (int i = 0; i < tabControl.TabCount; i++)
+                {
+                    Rectangle tabRect = tabControl.GetTabRect(i);
+                    if (tabRect.Contains(cursorPos))
+                    {
+                        TabPage tabUnderCursor = tabControl.TabPages[i];
+                        contextMenuTab = (tabUnderCursor != placeholderTab) ? tabUnderCursor : null;
+                        Logger.Write($"[v1.5.0] Aba detectada sob cursor: '{(contextMenuTab != null ? contextMenuTab.Text : "null")}'");
+                        return;
+                    }
+                }
+                contextMenuTab = null;
+            };
+
+            tabControl.ContextMenuStrip = tabContextMenu;
+        }
+
+        private void DeleteTabMenuItem_Click(object sender, EventArgs e)
+        {
+            Logger.Write($"[v1.5.0] DeleteTabMenuItem_Click acionado");
+
+            if (contextMenuTab == null || contextMenuTab == placeholderTab)
+            {
+                MessageBox.Show("Clique com o botão direito diretamente sobre uma aba para excluí-la.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (MessageBox.Show($"Excluir a aba '{contextMenuTab.Text}' permanentemente?", "Confirmação",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+            {
+                Logger.Write($"[v1.5.0] Excluindo aba: '{contextMenuTab.Text}'");
+                DeleteTab(contextMenuTab);
+            }
+        }
+
+        private void DeleteTab(TabPage tab)
+        {
+            if (tab == null || tab == placeholderTab) return;
+
+            ATCRTF editor = tab.Controls.OfType<ATCRTF>().FirstOrDefault();
+            if (editor != null)
+            {
+                editor.SalvaRTF();
+                try { if (File.Exists(editor.caminhoDoArquivo)) File.Delete(editor.caminhoDoArquivo); }
+                catch (Exception ex) { Logger.WriteException(ex, "Delete arquivo"); }
+            }
+
+            tabControl.TabPages.Remove(tab);
+            SaveTabs();
+            Logger.Write($"[v1.5.0] Aba excluída: '{tab.Text}'");
+        }
+
+        private void TabControl_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                for (int i = 0; i < tabControl.TabCount; i++)
+                {
+                    Rectangle tabRect = tabControl.GetTabRect(i);
+                    if (tabRect.Contains(e.Location))
+                    {
+                        TabPage clickedTab = tabControl.TabPages[i];
+                        if (clickedTab != placeholderTab)
+                            tabControl.SelectedIndex = i;
+                        contextMenuTab = clickedTab;
+                        Logger.Write($"[v1.5.0] Botão direito na aba: '{clickedTab.Text}' (índice {i})");
+                        break;
+                    }
+                }
+            }
+        }
+
         private void TabControl_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             for (int i = 0; i < tabControl.TabCount; i++)
@@ -468,7 +376,7 @@ namespace AnotaRtf
                     {
                         tabControl.TabPages[i].Text = newName;
                         SaveTabs();
-                        Debug.WriteLine($"[v1.3.3] Renomeada: '{current}' -> '{newName}'");
+                        Logger.Write($"[v1.5.0] Aba renomeada: '{current}' → '{newName}'");
                     }
                     break;
                 }
@@ -477,99 +385,63 @@ namespace AnotaRtf
 
         private string PromptForTabName(string current)
         {
-            using (Form prompt = new Form
-            {
-                Text = "Renomear Aba",
-                StartPosition = FormStartPosition.CenterScreen,
-                Width = 320,
-                Height = 160,
-                MaximizeBox = false,
-                MinimizeBox = false,
-                FormBorderStyle = FormBorderStyle.FixedDialog
-            })
+            using (Form prompt = new Form { Text = "Renomear Aba", StartPosition = FormStartPosition.CenterScreen, Width = 320, Height = 160, MaximizeBox = false, MinimizeBox = false, FormBorderStyle = FormBorderStyle.FixedDialog })
             using (Label lbl = new Label { Text = "Nome da aba:", AutoSize = true, Location = new Point(20, 25) })
-            using (TextBox input = new TextBox
+            using (TextBox input = new TextBox { Location = new Point(20, 50), Size = new Size(260, 25), Text = current })
             {
-                Location = new Point(20, 50),
-                Size = new Size(260, 25),
-                Text = current
-            })
-            {
-                Button btnOk = new Button
-                {
-                    Text = "OK",
-                    Size = new Size(80, 30),
-                    DialogResult = DialogResult.OK
-                };
+                Button btnOk = new Button { Text = "OK", Size = new Size(80, 30), DialogResult = DialogResult.OK };
+                Button btnCancel = new Button { Text = "Cancelar", Size = new Size(80, 30), DialogResult = DialogResult.Cancel };
 
-                Button btnCancel = new Button
-                {
-                    Text = "Cancelar",
-                    Size = new Size(80, 30),
-                    DialogResult = DialogResult.Cancel
-                };
-
-                // 🔑 Define botões de aceitação/cancelamento (Enter/Esc)
-                prompt.AcceptButton = btnOk;
-                prompt.CancelButton = btnCancel;
-
-                // Centraliza os botões horizontalmente
                 int totalButtonsWidth = btnOk.Width + btnCancel.Width + 10;
                 int startX = (prompt.ClientSize.Width - totalButtonsWidth) / 2;
                 btnOk.Location = new Point(startX, 90);
                 btnCancel.Location = new Point(startX + btnOk.Width + 10, 90);
 
+                prompt.AcceptButton = btnOk;
+                prompt.CancelButton = btnCancel;
                 prompt.Controls.Add(lbl);
                 prompt.Controls.Add(input);
                 prompt.Controls.Add(btnOk);
                 prompt.Controls.Add(btnCancel);
-
-                // Define foco no TextBox ao abrir
                 prompt.Load += (s, e) => input.Focus();
 
                 return prompt.ShowDialog() == DialogResult.OK ? input.Text.Trim() : null;
             }
         }
 
-        //private void Form1_KeyDown(object sender, KeyEventArgs e)
-        //{
-        //    // Só permite exclusão de aba se:
-        //    // 1. A tecla pressionada é Delete
-        //    // 2. O TabControl tem foco (não o editor RTF nem outro controle)
-        //    // 3. Nenhuma aba está sendo editada (TextBox de renomeação não existe)
-        //    if (e.KeyCode == Keys.Delete && tabControl.ContainsFocus && tabControl.SelectedTab != null && tabControl.SelectedTab != placeholderTab)
-        //    {
-        //        // Verifica se o foco não está dentro do editor RTF (para não conflitar com exclusão de texto)
-        //        var activeControl = this.ActiveControl;
-        //        if (activeControl is ATCRTF || (activeControl is Control ctrl && ctrl.Parent is ATCRTF))
-        //        {
-        //            return; // Ignora Delete se estiver digitando no editor
-        //        }
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            Logger.Write($"[v1.5.0] Form1_Shown | firstShown={firstShown}, WindowState={this.WindowState}");
 
-        //        if (MessageBox.Show("Excluir esta aba permanentemente?", "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
-        //        {
-        //            TabPage tab = tabControl.SelectedTab;
-        //            ATCRTF editor = tab.Controls.OfType<ATCRTF>().FirstOrDefault();
-        //            if (editor != null)
-        //            {
-        //                editor.SalvaRTF();
-        //                try { if (File.Exists(editor.caminhoDoArquivo)) File.Delete(editor.caminhoDoArquivo); }
-        //                catch { }
-        //            }
-        //            tabControl.TabPages.Remove(tab);
-        //            SaveTabs();
-        //            Debug.WriteLine("[v1.3.8] Aba excluída");
-        //        }
-        //        e.Handled = true;
-        //        e.SuppressKeyPress = true;
-        //    }
-        //}
+            if (firstShown)
+            {
+                firstShown = false;
+                if (this.WindowState != FormWindowState.Minimized)
+                {
+                    this.WindowState = FormWindowState.Normal;
+                    this.BringToFront();
+                    this.Activate();
+
+                    Rectangle screenBounds = Screen.PrimaryScreen.WorkingArea;
+                    if (this.Left < 0 || this.Top < 0 || this.Right > screenBounds.Right || this.Bottom > screenBounds.Bottom)
+                    {
+                        Logger.Write("[v1.5.0] Janela fora da tela — centralizando");
+                        this.StartPosition = FormStartPosition.CenterScreen;
+                        this.WindowState = FormWindowState.Normal;
+                    }
+                }
+            }
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            Logger.Write($"[v1.5.0] Resize | WindowState={this.WindowState}");
+        }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Debug.WriteLine("[v1.4.3] Form1_FormClosing iniciado");
+            Logger.Write("[v1.5.0] Form1_FormClosing iniciado");
 
-            // Salva conteúdo de todas as abas
             foreach (TabPage tab in tabControl.TabPages)
             {
                 if (tab != placeholderTab)
@@ -580,22 +452,6 @@ namespace AnotaRtf
 
             SaveTabs();
 
-            // 🔑 Salva qual aba estava ativa (índice)
-            int activeTabIndex = tabControl.SelectedIndex;
-            if (activeTabIndex >= 0 && activeTabIndex < tabControl.TabPages.Count && tabControl.TabPages[activeTabIndex] != placeholderTab)
-            {
-                try
-                {
-                    using (RegistryKey key = Registry.CurrentUser.CreateSubKey(REGISTRY_KEY, true))
-                    {
-                        key.SetValue("ActiveTabIndex", activeTabIndex);
-                        Debug.WriteLine($"[v1.4.3] Aba ativa salva: índice {activeTabIndex}");
-                    }
-                }
-                catch { }
-            }
-
-            // Salva posição da janela
             try
             {
                 using (RegistryKey key = Registry.CurrentUser.CreateSubKey(REGISTRY_KEY, true))
@@ -604,10 +460,15 @@ namespace AnotaRtf
                     key.SetValue("WindowPositionY", this.Top);
                     key.SetValue("WindowWidth", this.Width);
                     key.SetValue("WindowHeight", this.Height);
+
+                    int activeTabIndex = tabControl.SelectedIndex;
+                    if (activeTabIndex >= 0 && activeTabIndex < tabControl.TabPages.Count && tabControl.TabPages[activeTabIndex] != placeholderTab)
+                        key.SetValue("ActiveTabIndex", activeTabIndex);
                 }
             }
-            catch { }
-        }
+            catch (Exception ex) { Logger.WriteException(ex, "Salvar configurações"); }
 
+            Logger.Write("[v1.5.0] Aplicativo encerrado");
+        }
     }
 }
