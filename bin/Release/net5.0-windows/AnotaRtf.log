@@ -1,48 +1,58 @@
-[22:18:43.845] ========================================
-[22:18:43.857] AnoteitoRtf - Início da Sessão
-[22:18:43.857] Versão: 1.4.8.0
-[22:18:43.858] Data/Hora: 20/03/2026 22:18:43
-[22:18:43.858] Arquivo: D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\AnotaRtf.log
-[22:18:43.858] ========================================
-[22:18:43.862] Aplicativo iniciado
-[22:18:44.066] [v1.5.1] Form1_Load iniciado
-[22:18:44.066] [v1.5.1] Base Directory: D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\
-[22:18:44.071] [v1.5.1] Arquivos RTF encontrados: 7
-[22:18:44.071] [v1.5.1]   → anotacao1.rtf
-[22:18:44.072] [v1.5.1]   → anotacao2.rtf
-[22:18:44.072] [v1.5.1]   → anotacao3.rtf
-[22:18:44.072] [v1.5.1]   → anotacao4.rtf
-[22:18:44.073] [v1.5.1]   → anotacao5.rtf
-[22:18:44.073] [v1.5.1]   → anotacao6.rtf
-[22:18:44.073] [v1.5.1]   → anotacao7.rtf
-[22:18:44.081] [v1.5.0] Resize | WindowState=Normal
-[22:18:44.088] [v1.5.0] LoadTabs iniciado
-[22:18:44.097] [v1.5.0] Encontradas 5 abas no Registro
-[22:18:44.098] [v1.5.0] CreateTab(fileIndex=1, displayName='Um')
-[22:18:44.134] [v1.5.0] ✅ Aba criada: 'Um' | Controles internos: 2
-[22:18:44.134] [v1.5.0] ✓ Aba 'Um' carregada (anotacao1.rtf)
-[22:18:44.135] [v1.5.0] CreateTab(fileIndex=2, displayName='Dois')
-[22:18:44.226] [v1.5.0] ✅ Aba criada: 'Dois' | Controles internos: 2
-[22:18:44.227] [v1.5.0] ✓ Aba 'Dois' carregada (anotacao2.rtf)
-[22:18:44.227] [v1.5.0] CreateTab(fileIndex=3, displayName='Teletudo')
-[22:18:44.246] [v1.5.0] ✅ Aba criada: 'Teletudo' | Controles internos: 2
-[22:18:44.246] [v1.5.0] ✓ Aba 'Teletudo' carregada (anotacao3.rtf)
-[22:18:44.247] [v1.5.0] CreateTab(fileIndex=4, displayName='Quatro')
-[22:18:44.269] [v1.5.0] ✅ Aba criada: 'Quatro' | Controles internos: 2
-[22:18:44.270] [v1.5.0] ✓ Aba 'Quatro' carregada (anotacao4.rtf)
-[22:18:44.270] [v1.5.0] CreateTab(fileIndex=5, displayName='Cinco')
-[22:18:44.292] [v1.5.0] ✅ Aba criada: 'Cinco' | Controles internos: 2
-[22:18:44.293] [v1.5.0] ✓ Aba 'Cinco' carregada (anotacao5.rtf)
-[22:18:44.293] [v1.5.0] nextFileIndex definido para: 6
-[22:18:44.295] [v1.5.0] Aba restaurada: índice 2 ('Teletudo')
-[22:18:44.296] [v1.5.1] Título definido: AnoteitoRtf v1.4
-[22:18:44.296] [v1.5.1] Form1_Load concluído
-[22:18:44.328] [v1.5.0] Form1_Shown | firstShown=True, WindowState=Normal
-[22:18:44.329] [v1.5.0] Form1_Shown | firstShown=False, WindowState=Normal
-[22:18:48.930] [v1.5.0] Form1_FormClosing iniciado
-[22:18:48.940] [v1.5.0] Salva: 'Um' → anotacao1.rtf
-[22:18:48.940] [v1.5.0] Salva: 'Dois' → anotacao2.rtf
-[22:18:48.941] [v1.5.0] Salva: 'Teletudo' → anotacao3.rtf
-[22:18:48.941] [v1.5.0] Salva: 'Quatro' → anotacao4.rtf
-[22:18:48.941] [v1.5.0] Salva: 'Cinco' → anotacao5.rtf
-[22:18:48.941] [v1.5.0] Aplicativo encerrado
+[23:48:18.237] ========================================
+[23:48:18.247] AnoteitoRtf - Início da Sessão
+[23:48:18.247] Versão: 1.4.8.0
+[23:48:18.248] Data/Hora: 23/03/2026 23:48:18
+[23:48:18.248] Arquivo: D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\AnotaRtf.log
+[23:48:18.248] ========================================
+[23:48:18.251] Aplicativo iniciado
+[23:48:18.458] [v1.5.1] Form1_Load iniciado
+[23:48:18.459] [v1.5.1] Base Directory: D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\
+[23:48:18.463] [v1.5.1] Arquivos RTF encontrados: 7
+[23:48:18.463] [v1.5.1]   → anotacao1.rtf
+[23:48:18.463] [v1.5.1]   → anotacao2.rtf
+[23:48:18.463] [v1.5.1]   → anotacao3.rtf
+[23:48:18.463] [v1.5.1]   → anotacao4.rtf
+[23:48:18.463] [v1.5.1]   → anotacao5.rtf
+[23:48:18.464] [v1.5.1]   → anotacao6.rtf
+[23:48:18.464] [v1.5.1]   → anotacao7.rtf
+[23:48:18.472] [v1.5.0] Resize | WindowState=Normal
+[23:48:18.479] [v1.5.0] LoadTabs iniciado
+[23:48:18.488] [v1.5.0] Encontradas 6 abas no Registro
+[23:48:18.489] [v1.5.0] CreateTab(fileIndex=1, displayName='Um')
+[23:48:18.527] [v1.5.0] ✅ Aba criada: 'Um' | Controles internos: 2
+[23:48:18.528] [v1.5.0] ✓ Aba 'Um' carregada (anotacao1.rtf)
+[23:48:18.528] [v1.5.0] CreateTab(fileIndex=3, displayName='Teletudo')
+[23:48:18.549] [v1.5.0] ✅ Aba criada: 'Teletudo' | Controles internos: 2
+[23:48:18.549] [v1.5.0] ✓ Aba 'Teletudo' carregada (anotacao3.rtf)
+[23:48:18.549] [v1.5.0] CreateTab(fileIndex=4, displayName='Quatro')
+[23:48:18.573] [v1.5.0] ✅ Aba criada: 'Quatro' | Controles internos: 2
+[23:48:18.574] [v1.5.0] ✓ Aba 'Quatro' carregada (anotacao4.rtf)
+[23:48:18.574] [v1.5.0] CreateTab(fileIndex=5, displayName='Cinco')
+[23:48:18.593] [v1.5.0] ✅ Aba criada: 'Cinco' | Controles internos: 2
+[23:48:18.593] [v1.5.0] ✓ Aba 'Cinco' carregada (anotacao5.rtf)
+[23:48:18.593] [v1.5.0] CreateTab(fileIndex=6, displayName='Seis')
+[23:48:18.618] [v1.5.0] ✅ Aba criada: 'Seis' | Controles internos: 2
+[23:48:18.618] [v1.5.0] ✓ Aba 'Seis' carregada (anotacao6.rtf)
+[23:48:18.619] [v1.5.0] CreateTab(fileIndex=7, displayName='C#')
+[23:48:18.642] [v1.5.0] ✅ Aba criada: 'C#' | Controles internos: 2
+[23:48:18.642] [v1.5.0] ✓ Aba 'C#' carregada (anotacao7.rtf)
+[23:48:18.642] [v1.5.0] nextFileIndex definido para: 8
+[23:48:18.645] [v1.5.0] Aba restaurada: índice 1 ('Teletudo')
+[23:48:18.645] [v1.5.1] Título definido: AnoteitoRtf v1.4
+[23:48:18.645] [v1.5.1] Form1_Load concluído
+[23:48:18.677] [v1.5.0] Form1_Shown | firstShown=True, WindowState=Normal
+[23:48:18.678] [v1.5.0] Form1_Shown | firstShown=False, WindowState=Normal
+[01:04:26.228] [v1.5.0] Resize | WindowState=Minimized
+[01:19:07.047] [v1.5.0] Resize | WindowState=Normal
+[01:19:57.167] [v1.5.0] Resize | WindowState=Minimized
+[01:32:50.241] [v1.5.0] Resize | WindowState=Normal
+[01:33:47.879] [v1.5.0] Resize | WindowState=Minimized
+[01:57:14.798] [v1.5.0] Resize | WindowState=Normal
+[02:05:08.256] [v1.5.0] Form1_FormClosing iniciado
+[02:05:08.265] [v1.5.0] Salva: 'Um' → anotacao1.rtf
+[02:05:08.266] [v1.5.0] Salva: 'Teletudo' → anotacao3.rtf
+[02:05:08.266] [v1.5.0] Salva: 'Quatro' → anotacao4.rtf
+[02:05:08.266] [v1.5.0] Salva: 'Cinco' → anotacao5.rtf
+[02:05:08.266] [v1.5.0] Salva: 'Seis' → anotacao6.rtf
+[02:05:08.267] [v1.5.0] Salva: 'C#' → anotacao7.rtf
+[02:05:08.267] [v1.5.0] Aplicativo encerrado

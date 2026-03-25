@@ -1,5 +1,5 @@
 {\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Arial;}}
-{\colortbl ;\red0\green128\blue0;\red0\green0\blue0;}
+{\colortbl ;\red0\green128\blue0;\red255\green165\blue0;\red0\green0\blue0;}
 {\*\generator Riched20 10.0.19041}\viewkind4\uc1 
 \pard\cf1\fs28\lang1046 Etapa 4\par
 \par
@@ -22,12 +22,16 @@ Subetapa 4.3\par
 Aplicar idempot\'eancia na cria\'e7\'e3o.\par
 Resumo gerar e salvar uma chave \'fanica por tentativa para evitar cobran\'e7a duplicada.\par
 Fonte prov\'e1vel MercadoPagoService, tt_pedido ou tabela de pagamentos.\par
-\cf2\par
+\par
+\cf2 23/03 : 22:00 PaymentTransactionService\par
+23/03 : 23:18 OrderPaymentService\cf1\par
+\cf3\par
 Subetapa 4.4\par
 \par
 Padronizar o retorno para o frontend.\par
 Resumo devolver qr_code, qr_code_base64, copia e cola, payment_id e expira\'e7\'e3o.\par
 Fonte prov\'e1vel MercadoPagoService, controller do checkout.\par
+\cf2 24/03 :00:14 createPixForOrder\cf3\par
 \par
 Etapa 5\par
 \par
@@ -38,12 +42,16 @@ Subetapa 5.1\par
 Remover a chamada direta para OpenPix.\par
 Resumo o controller passa a chamar o resolvedor de gateway.\par
 Fonte prov\'e1vel PedidoController.\par
+\cf2 24/03 :01:14 PagtoPix\par
+24/03 :01:19 PagtoPix.blade.php\par
+24/03 :01:33 PaymentStatusController\cf3\par
 \par
 Subetapa 5.2\par
 \par
 Salvar o v\'ednculo do pagamento de forma gen\'e9rica.\par
 Resumo registrar gateway, id externo, status externo, idempotency_key e expiration_at.\par
 Fonte prov\'e1vel tt_pedido, migration nova.\par
+\cf2 24/03 :01:57 createPixForOrder\cf3\par
 \par
 Subetapa 5.3\par
 \par

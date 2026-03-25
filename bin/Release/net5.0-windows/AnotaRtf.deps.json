@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v5.0": {
-      "AnotaRtf/1.1.2": {
+      "AnotaRtf/1.1.0": {
         "dependencies": {
           "AtcCtrl": "1.2.9",
           "EditRtf": "1.0.0.0"
@@ -16,22 +16,8 @@
         }
       },
       "AtcCtrl/1.2.9": {
-        "dependencies": {
-          "ATCDll": "1.0.0"
-        },
         "runtime": {
-          "AtcCtrl.dll": {
-            "assemblyVersion": "1.2.9.0",
-            "fileVersion": "1.2.9.0"
-          }
-        }
-      },
-      "ATCDll/1.0.0": {
-        "runtime": {
-          "ATCDll.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "AtcCtrl.dll": {}
         }
       },
       "EditRtf/1.0.0.0": {
@@ -41,11 +27,19 @@
             "fileVersion": "1.0.0.0"
           }
         }
+      },
+      "ATCDll/1.0.0.0": {
+        "runtime": {
+          "ATCDll.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
       }
     }
   },
   "libraries": {
-    "AnotaRtf/1.1.2": {
+    "AnotaRtf/1.1.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -55,12 +49,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "ATCDll/1.0.0": {
-      "type": "project",
+    "EditRtf/1.0.0.0": {
+      "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
-    "EditRtf/1.0.0.0": {
+    "ATCDll/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

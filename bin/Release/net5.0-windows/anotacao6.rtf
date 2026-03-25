@@ -1,15 +1,325 @@
 {\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Segoe UI;}}
-{\colortbl ;\red0\green0\blue0;}
+{\colortbl ;\red0\green0\blue255;\red0\green0\blue0;}
 {\*\generator Riched20 10.0.19041}\viewkind4\uc1 
-\pard\cf1\f0\fs30\lang1046 DeliveryController\par
-para virar o ponto oficial de contabiliza\'e7\'e3o final\par
+\pard\cf1\f0\fs30\lang1046 Etapa 1\par
 \par
-OpenPixController\par
-para deixar de chamar Efetiva() no webhook\par
+Consolidar o fluxo oficial de fechamento do pedido\par
 \par
-PedidoController modo simulado\par
-para n\'e3o continuar simulando o comportamento errado\par
+Subetapa 1.1\par
 \par
-AppController::notifyDeliveryCompleted()\par
-para verificar se ele tamb\'e9m est\'e1 contabilizando onde n\'e3o deveria\par
+Definir o ponto oficial de confirma\'e7\'e3o do pagamento.\par
+Resumo o webhook deve apenas confirmar o pagamento e atualizar o pedido.\par
+Fonte prov\'e1vel PaymentWebhookController, OpenPixController, tt_pedido.\par
+\cf2\par
+Subetapa 1.2\par
+\par
+Definir o ponto oficial de contabiliza\'e7\'e3o final.\par
+Resumo a conclus\'e3o financeira deve acontecer em um \'fanico ponto.\par
+Fonte prov\'e1vel DeliveryController, Entrega.php, tt_pedido.\par
+\par
+Subetapa 1.3\par
+\par
+Separar pagamento de entrega e de contabiliza\'e7\'e3o.\par
+Resumo cada fase deve ter responsabilidade pr\'f3pria.\par
+Fonte prov\'e1vel OpenPixController, DeliveryController, Entrega.php.\par
+\par
+Subetapa 1.4\par
+\par
+Padronizar o significado dos status do pedido.\par
+Resumo evitar que os mesmos status representem momentos diferentes.\par
+Fonte prov\'e1vel tt_pedido, DeliveryController, PedidoController.\par
+\par
+Etapa 2\par
+\par
+Mapear e classificar os pontos que hoje chamam Efetiva ou EfetivaPedidoNoBD\par
+\par
+Subetapa 2.1\par
+\par
+Classificar chamadas do fluxo de pagamento.\par
+Resumo identificar onde o pagamento j\'e1 dispara efetiva\'e7\'e3o cedo demais.\par
+Fonte prov\'e1vel OpenPixController, PedidoController.\par
+\par
+Subetapa 2.2\par
+\par
+Classificar chamadas do fluxo de entrega.\par
+Resumo identificar onde a conclus\'e3o operacional est\'e1 misturada com financeiro.\par
+Fonte prov\'e1vel AppController, DeliveryController, processo/index.blade.php.\par
+\par
+Subetapa 2.3\par
+\par
+Classificar chamadas do fluxo de integra\'e7\'e3o externa.\par
+Resumo separar regras de pedido interno e pedido externo.\par
+Fonte prov\'e1vel IntegracaoPedidoController, Entrega.php.\par
+\par
+Subetapa 2.4\par
+\par
+Classificar chamadas do fluxo legado de compra direta.\par
+Resumo revisar pontos antigos que ainda fecham pedido imediatamente.\par
+Fonte prov\'e1vel Notificacao.php, Entrega.php.\par
+\par
+Etapa 3\par
+\par
+Definir quais chamadas devem ser alteradas agora\par
+\par
+Subetapa 3.1\par
+\par
+Alterar os pontos que contabilizam antes da hora.\par
+Resumo remover efetiva\'e7\'e3o do webhook e de simula\'e7\'f5es de pagamento.\par
+Fonte prov\'e1vel OpenPixController, PedidoController.\par
+\par
+Subetapa 3.2\par
+\par
+Alterar o ponto oficial de conclus\'e3o.\par
+Resumo corrigir DeliveryController para ser o fechamento final correto.\par
+Fonte prov\'e1vel DeliveryController, Entrega.php.\par
+\par
+Subetapa 3.3\par
+\par
+Isolar fluxos especiais para an\'e1lise posterior.\par
+Resumo n\'e3o misturar pedidos externos e fluxos legados na primeira refatora\'e7\'e3o.\par
+Fonte prov\'e1vel IntegracaoPedidoController, Notificacao.php, AppController.\par
+\par
+Etapa 4\par
+\par
+Criar um ponto p\'fablico e seguro de conclus\'e3o final\par
+\par
+Subetapa 4.1\par
+\par
+Criar um m\'e9todo p\'fablico espec\'edfico para fechamento por confirma\'e7\'e3o.\par
+Resumo evitar chamadas diretas a m\'e9todo private ou uso errado de Efetiva.\par
+Fonte prov\'e1vel Entrega.php.\par
+\par
+Subetapa 4.2\par
+\par
+Garantir idempot\'eancia na conclus\'e3o.\par
+Resumo impedir dupla contabiliza\'e7\'e3o se o c\'f3digo for reenviado.\par
+Fonte prov\'e1vel Entrega.php, DeliveryController, tt_pedido.\par
+\par
+Subetapa 4.3\par
+\par
+Mover a l\'f3gica de contabiliza\'e7\'e3o final para esse ponto \'fanico.\par
+Resumo concentrar o fechamento financeiro em uma rotina oficial.\par
+Fonte prov\'e1vel Entrega.php, DeliveryController.\par
+\par
+Subetapa 4.4\par
+\par
+Preservar o fluxo operacional da entrega.\par
+Resumo n\'e3o quebrar a log\'edstica enquanto o financeiro \'e9 reorganizado.\par
+Fonte prov\'e1vel Entrega.php, tt_entrega, AppController.\par
+\par
+Etapa 5\par
+\par
+Corrigir o DeliveryController\par
+\par
+Subetapa 5.1\par
+\par
+Corrigir a importa\'e7\'e3o da classe Entrega.\par
+Resumo usar a classe correta do projeto.\par
+Fonte prov\'e1vel DeliveryController.\par
+\par
+Subetapa 5.2\par
+\par
+Corrigir o campo de busca do pedido.\par
+Resumo usar idPed em vez de ID, se esse for o campo oficial.\par
+Fonte prov\'e1vel DeliveryController, tt_pedido.\par
+\par
+Subetapa 5.3\par
+\par
+Trocar a chamada indevida de EfetivaPedidoNoBD.\par
+Resumo chamar o novo m\'e9todo p\'fablico de conclus\'e3o final.\par
+Fonte prov\'e1vel DeliveryController, Entrega.php.\par
+\par
+Subetapa 5.4\par
+\par
+Garantir atualiza\'e7\'e3o consistente do status final.\par
+Resumo s\'f3 concluir pedido se a contabiliza\'e7\'e3o finalizar sem erro.\par
+Fonte prov\'e1vel DeliveryController, tt_pedido.\par
+\par
+Etapa 6\par
+\par
+Remover a efetiva\'e7\'e3o indevida dos fluxos de pagamento\par
+\par
+Subetapa 6.1\par
+\par
+Ajustar o webhook legado da OpenPix.\par
+Resumo ele deve parar de chamar Efetiva.\par
+Fonte prov\'e1vel OpenPixController.\par
+\par
+Subetapa 6.2\par
+\par
+Ajustar o modo simulado do Pix.\par
+Resumo a simula\'e7\'e3o n\'e3o deve perpetuar a regra errada.\par
+Fonte prov\'e1vel PedidoController.\par
+\par
+Subetapa 6.3\par
+\par
+Separar gera\'e7\'e3o de ConfirmCode da contabiliza\'e7\'e3o.\par
+Resumo webhook ou simula\'e7\'e3o podem gerar c\'f3digo, mas n\'e3o fechar o financeiro.\par
+Fonte prov\'e1vel OpenPixController, PedidoController, tt_pedido.\par
+\par
+Etapa 7\par
+\par
+Revisar os fluxos paralelos que ainda usam Efetiva\par
+\par
+Subetapa 7.1\par
+\par
+Revisar notifyDeliveryCompleted.\par
+Resumo confirmar se esse fluxo deve concluir opera\'e7\'e3o sem contabilizar duas vezes.\par
+Fonte prov\'e1vel AppController.\par
+\par
+Subetapa 7.2\par
+\par
+Revisar compra direta e notifica\'e7\'e3o.\par
+Resumo verificar se esse fluxo \'e9 exce\'e7\'e3o leg\'edtima ou legado a ajustar.\par
+Fonte prov\'e1vel Notificacao.php.\par
+\par
+Subetapa 7.3\par
+\par
+Revisar integra\'e7\'e3o externa.\par
+Resumo decidir se pedido externo usa o mesmo fechamento ou fluxo pr\'f3prio.\par
+Fonte prov\'e1vel IntegracaoPedidoController, Entrega.php.\par
+\par
+Subetapa 7.4\par
+\par
+Revisar l\'f3gica em view antiga.\par
+Resumo retirar regra de dom\'ednio de blade legado.\par
+Fonte prov\'e1vel processo/index.blade.php.\par
+\par
+Etapa 8\par
+\par
+Consolidar a arquitetura neutra de gateway\par
+\par
+Subetapa 8.1\par
+\par
+Criar o contrato \'fanico de gateway.\par
+Resumo o core para de depender do provider concreto.\par
+Fonte prov\'e1vel PaymentGatewayInterface.\par
+\par
+Subetapa 8.2\par
+\par
+Criar o resolvedor de gateway.\par
+Resumo ele escolhe o gateway do pedido.\par
+Fonte prov\'e1vel PaymentGatewayResolver.\par
+\par
+Subetapa 8.3\par
+\par
+Criar a camada orquestradora de pagamento.\par
+Resumo centralizar cria\'e7\'e3o, consulta e atualiza\'e7\'e3o do pagamento.\par
+Fonte prov\'e1vel OrderPaymentService.\par
+\par
+Subetapa 8.4\par
+\par
+Criar o servi\'e7o de persist\'eancia das tentativas.\par
+Resumo concentrar a escrita em tt_payment_transactions.\par
+Fonte prov\'e1vel PaymentTransactionService.\par
+\par
+Etapa 9\par
+\par
+Implementar o gateway MercadoPago\par
+\par
+Subetapa 9.1\par
+\par
+Criar o MercadoPagoService.\par
+Resumo encapsular cria\'e7\'e3o de Pix, consulta e leitura de resposta.\par
+Fonte prov\'e1vel MercadoPagoService.\par
+\par
+Subetapa 9.2\par
+\par
+Montar o payload m\'ednimo obrigat\'f3rio.\par
+Resumo enviar valor, descri\'e7\'e3o, email e documento fiscal sem m\'e1scara.\par
+Fonte prov\'e1vel MercadoPagoService, OrderPaymentService, cadastro do cliente.\par
+\par
+Subetapa 9.3\par
+\par
+Aplicar idempot\'eancia por tentativa.\par
+Resumo gerar e salvar uma chave \'fanica por tentativa de cria\'e7\'e3o.\par
+Fonte prov\'e1vel MercadoPagoService, tt_payment_transactions.\par
+\par
+Subetapa 9.4\par
+\par
+Padronizar o retorno para o frontend.\par
+Resumo devolver qr_code, qr_code_base64, copia e cola, payment_id e expira\'e7\'e3o.\par
+Fonte prov\'e1vel MercadoPagoService, OrderPaymentService.\par
+\par
+Etapa 10\par
+\par
+Integrar banco e pagamento\par
+\par
+Subetapa 10.1\par
+\par
+Usar tt_payment_gateways como tabela mestre.\par
+Resumo cada pedido deve apontar para o gateway usado.\par
+Fonte prov\'e1vel tt_payment_gateways, tt_pedido.\par
+\par
+Subetapa 10.2\par
+\par
+Usar tt_payment_transactions como hist\'f3rico.\par
+Resumo cada tentativa precisa ficar registrada separadamente.\par
+Fonte prov\'e1vel tt_payment_transactions.\par
+\par
+Subetapa 10.3\par
+\par
+Atualizar tt_pedido como resumo atual.\par
+Resumo gateway atual, payment_id externo, status atual e dados finais do pedido.\par
+Fonte prov\'e1vel tt_pedido.\par
+\par
+Etapa 11\par
+\par
+Preparar o frontend da venda\par
+\par
+Subetapa 11.1\par
+\par
+Trocar a tela Pix para dados internos.\par
+Resumo remover depend\'eancia do script da OpenPix.\par
+Fonte prov\'e1vel PagtoPix.blade.php.\par
+\par
+Subetapa 11.2\par
+\par
+Consultar status por endpoint interno.\par
+Resumo a tela n\'e3o deve consultar o gateway diretamente.\par
+Fonte prov\'e1vel PaymentStatusController, PagtoPix.blade.php.\par
+\par
+Subetapa 11.3\par
+\par
+Preservar o resumo e o ConfirmCode.\par
+Resumo o cliente deve continuar vendo o c\'f3digo no mesmo fluxo.\par
+Fonte prov\'e1vel resumo.blade.php, tt_pedido.\par
+\par
+Etapa 12\par
+\par
+Fechar o webhook e a transi\'e7\'e3o\par
+\par
+Subetapa 12.1\par
+\par
+Criar o webhook do MercadoPago.\par
+Resumo ele confirma pagamento, atualiza o pedido e registra a transa\'e7\'e3o.\par
+Fonte prov\'e1vel PaymentWebhookController, MercadoPagoService.\par
+\par
+Subetapa 12.2\par
+\par
+Validar assinatura e consultar o pagamento real.\par
+Resumo o webhook deve ser s\'f3 gatilho e n\'e3o fonte \'fanica da verdade.\par
+Fonte prov\'e1vel MercadoPagoService, PaymentWebhookController.\par
+\par
+Subetapa 12.3\par
+\par
+Desligar o legado do fluxo principal.\par
+Resumo OpenPix e chamadas antigas saem do caminho principal.\par
+Fonte prov\'e1vel OpenPixController, PedidoController, rotas, config.\par
+\par
+Resumo do foco mais urgente\par
+\par
+O ponto mais urgente n\'e3o \'e9 o MercadoPago em si.\par
+\'c9 corrigir a dispers\'e3o atual de Efetiva e EfetivaPedidoNoBD.\par
+Sem isso, qualquer gateway novo entra num fluxo que ainda corre risco de contabiliza\'e7\'e3o duplicada.\par
+\par
+A ordem mais segura de execu\'e7\'e3o \'e9 esta\par
+\par
+primeiro consolidar o ponto \'fanico de conclus\'e3o final\par
+\par
+depois remover a efetiva\'e7\'e3o indevida do pagamento\par
+\par
+depois encaixar MercadoPago na arquitetura nova\par
+\par
+depois limpar os fluxos legados paralelos\par
 }

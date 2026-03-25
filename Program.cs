@@ -11,7 +11,7 @@ namespace AnotaRtf
         [STAThread]
         static void Main()
         {
-            Logger.Initialize(); // ← ← ← OBRIGATÓRIO para criar o log
+            Logger.Initialize(); // ← Inicializa o sistema de logs
             Logger.Write("Aplicativo iniciado");
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
