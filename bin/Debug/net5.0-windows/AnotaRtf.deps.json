@@ -8,21 +8,21 @@
     ".NETCoreApp,Version=v5.0": {
       "AnotaRtf/1.1.2": {
         "dependencies": {
-          "AtcCtrl": "1.2.9",
+          "AtcCtrl": "1.3.1",
           "EditRtf": "1.0.0.0"
         },
         "runtime": {
           "AnotaRtf.dll": {}
         }
       },
-      "AtcCtrl/1.2.9": {
+      "AtcCtrl/1.3.1": {
         "dependencies": {
           "ATCDll": "1.0.0"
         },
         "runtime": {
           "AtcCtrl.dll": {
-            "assemblyVersion": "1.2.9.0",
-            "fileVersion": "1.2.9.0"
+            "assemblyVersion": "1.3.1.0",
+            "fileVersion": "1.3.1.0"
           }
         }
       },
@@ -50,7 +50,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "AtcCtrl/1.2.9": {
+    "AtcCtrl/1.3.1": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

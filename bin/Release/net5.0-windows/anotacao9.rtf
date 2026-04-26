@@ -1,0 +1,59 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Arial;}}
+{\colortbl ;\red0\green128\blue0;}
+{\*\generator Riched20 10.0.19041}\viewkind4\uc1 
+\pard\cf1\fs24\lang1046 Corre\'e7\'e3o do "Sumi\'e7o" dos Dados (Tela em Branco):\par
+\par
+        Aplicar a corre\'e7\'e3o do WorkingDirectory no arquivo Program.cs.\par
+\par
+        Testar a abertura via Atualizador para garantir que os dados carregam.\par
+\par
+    Refinamento de UX (A Op\'e7\'e3o que "Sumiu"):\par
+\par
+        Adicionar um t\'edtulo visualmente claro e de destaque no topo da coluna da direita (ex: um Label grande com fundo diferenciado escrito "GERENCIAMENTO DE CONGREGA\'c7\'d5ES").\par
+\par
+        Isso educa o usu\'e1rio visualmente de que a aba n\'e3o sumiu, apenas mudou de lugar.\par
+\par
+    Valida\'e7\'e3o do Layout 1.5:\par
+\par
+        Compilar a tela que fizemos com o Grid menor e Avisos maiores e validar se o conforto na digita\'e7\'e3o atingiu a expectativa dele.\par
+\cf0\par
+\cf1 Fase 2: Estrutura\'e7\'e3o para M\'faltiplas Congrega\'e7\'f5es (Backend / C\'f3digo)\par
+\par
+Aqui preparamos os "bastidores" do programa para suportar o que ele mostrou no Excel (Beco da Vit\'f3ria, Vale das Figueiras, etc).\par
+\par
+    Refatora\'e7\'e3o do Modelo de Dados:\par
+\par
+        Alterar a classe/entidade que guarda os dados de uma \'fanica Congrega\'e7\'e3o para suportar uma Lista/Array (ex: List<Congregacao>).\par
+\par
+    Ajuste na Rotina de Salvamento:\par
+\par
+        Modificar o m\'e9todo do bot\'e3o Salvar para gravar e ler essa nova lista corretamente no banco de dados ou arquivo JSON/XML.\par
+\cf0\par
+\cf1 Fase 3: Nova Interface de M\'faltiplas Congrega\'e7\'f5es (Frontend / Tela)\par
+\par
+Como vamos permitir que o Denis adicione e alterne entre v\'e1rias congrega\'e7\'f5es na tela unificada.\par
+\par
+    Controle de Navega\'e7\'e3o Interno:\par
+\par
+        Implementar na coluna da direita um mecanismo para gerenciar a lista. Pode ser um ComboBox (menu suspenso) escrito "Selecione a Congrega\'e7\'e3o", junto com bot\'f5es [+] Nova e [-] Excluir.\par
+\par
+        Alternativa: Usar um pequeno TabControl apenas dentro da coluna da direita, onde cada aba \'e9 uma congrega\'e7\'e3o.\par
+\par
+    L\'f3gica de Preenchimento da Tela (Bind):\par
+\par
+        Criar a rotina: ao trocar de congrega\'e7\'e3o no menu/aba, a tela limpa e carrega o Grid e os Avisos espec\'edficos daquela congrega\'e7\'e3o selecionada.\par
+\cf0\par
+\cf1 Fase 4: Ajuste do Gerador de PDF / Impress\'e3o\par
+\par
+A etapa final para o produto completo: o motor de impress\'e3o precisa entender as novas congrega\'e7\'f5es.\par
+\par
+    Refatora\'e7\'e3o do Motor de PDF:\par
+\par
+        Alterar a rotina que desenha o PDF para incluir um la\'e7o de repeti\'e7\'e3o (foreach).\par
+\par
+        O sistema deve imprimir a P\'e1gina 1 (Sede) e depois gerar uma p\'e1gina nova para cada congrega\'e7\'e3o existente na lista.\par
+\par
+    Regras de Quebra de P\'e1gina:\par
+\par
+        Garantir que os "Avisos Gerais (Final)" saiam apenas na \'faltima p\'e1gina do documento, ap\'f3s a impress\'e3o da \'faltima congrega\'e7\'e3o.\fs22\par
+}

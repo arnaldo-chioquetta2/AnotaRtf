@@ -1,0 +1,109 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Segoe UI;}}
+{\colortbl ;\red255\green0\blue0;\red0\green128\blue0;\red0\green0\blue255;}
+{\*\generator Riched20 10.0.19041}\viewkind4\uc1 
+\pard\cf1\b\f0\fs24\lang1046 ALTER TABLE Entregas ADD COLUMN idLiberadoPor INTEGER\cf0\b0\par
+\par
+\cf2 ETAPA 1 - BANCO DE DADOS\par
+Objetivo: armazenar quem liberou a tele\par
+\par
+Subetapa 1.1\par
+Adicionar coluna na tabela Entregas\par
+Campo: idLiberadoPor (INTEGER)\par
+\par
+Subetapa 1.2 (opcional futuro)\par
+Relacionar com tabela Vendedores (mesma l\'f3gica de idVend)\par
+\par
+---\par
+\par
+ETAPA 2 - BACK-END (DAO)\par
+Objetivo: salvar e buscar o novo campo\par
+\par
+Subetapa 2.1\par
+Alterar m\'e9todo Adiciona para receber idLiberadoPor\par
+\par
+Subetapa 2.2\par
+Alterar m\'e9todo Edita para receber idLiberadoPor\par
+\par
+Subetapa 2.3\par
+Alterar getDados\par
+Adicionar no SELECT o nome de quem liberou\par
+Adicionar LEFT JOIN com Vendedores\par
+\par
+Subetapa 2.4\par
+Atualizar logs (glo.Loga) incluindo idLiberadoPor\par
+\cf0\par
+---\par
+\par
+\cf2 ETAPA 3 - FRONT-END (TELA)\par
+Objetivo: permitir sele\'e7\'e3o do liberador\par
+\par
+Subetapa 3.1\par
+Criar ComboBox cmbLiberadoPor\par
+\par
+Subetapa 3.2\par
+Posicionar abaixo do campo Vendedor\par
+\cf3\par
+Subetapa 3.3\par
+Carregar ComboBox com Vendedores\par
+\cf0\par
+Subetapa 3.4\par
+Definir valor padr\'e3o (opcional) igual ao vendedor\par
+\par
+---\par
+\par
+ETAPA 4 - SALVAR DADOS\par
+Objetivo: persistir o valor selecionado\par
+\par
+Subetapa 4.1\par
+Capturar SelectedValue do cmbLiberadoPor\par
+\par
+Subetapa 4.2\par
+Enviar para o m\'e9todo Adiciona/Edita do DAO\par
+\par
+---\par
+\par
+ETAPA 5 - GRID (VISUALIZA\'c7\'c3O)\par
+Objetivo: exibir na tela\par
+\par
+Subetapa 5.1\par
+Adicionar coluna LiberadoPor na grid\par
+\par
+Subetapa 5.2\par
+Ajustar largura da coluna no ConfigurarGrid\par
+\par
+Subetapa 5.3\par
+N\'e3o preencher essa coluna na linha Total\par
+\par
+---\par
+\par
+ETAPA 6 - EDI\'c7\'c3O DE REGISTRO\par
+Objetivo: permitir edi\'e7\'e3o do campo\par
+\par
+Subetapa 6.1\par
+No clique da grid, carregar idLiberadoPor no ComboBox\par
+\par
+---\par
+\par
+ETAPA 7 - COMPATIBILIDADE\par
+Objetivo: n\'e3o quebrar registros antigos\par
+\par
+Subetapa 7.1\par
+Tratar valores nulos (DBNull)\par
+\par
+---\par
+\par
+ETAPA 8 - MELHORIAS FUTURAS (OPCIONAL)\par
+\par
+Subetapa 8.1\par
+Filtro por LiberadoPor\par
+\par
+Subetapa 8.2\par
+Relat\'f3rio por liberador\par
+\par
+Subetapa 8.3\par
+An\'e1lise de produtividade (quem libera mais teles)\par
+\par
+---\par
+\par
+Se quiser, pr\'f3ximo passo eu j\'e1 te entrego o c\'f3digo pronto come\'e7ando pelo banco + DAO.\fs20\par
+}

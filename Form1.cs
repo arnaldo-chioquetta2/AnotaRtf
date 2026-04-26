@@ -1,12 +1,14 @@
 ﻿using AtcCtrl;
-using Microsoft.Win32;
 using System;
-using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Drawing;
+using Microsoft.Win32;
+using System.Reflection;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-//using System.Diagnostics;
 
 namespace AnotaRtf
 {
@@ -22,6 +24,42 @@ namespace AnotaRtf
         private const string REGISTRY_KEY = @"AnoteitorRTF\MyApp";
         private const string TABS_SUBKEY = @"AnoteitorRTF\MyApp\Tabs";
         private readonly string LOG_TAB_NAME="log";
+
+        private readonly Dictionary<TabPage, EstadoVisualAba> _estadoVisualPorAba = new();
+
+        #region ApiWindows
+
+        private const int WM_USER = 0x0400;
+        private const int EM_GETSEL = 0x00B0;
+        private const int EM_SETSEL = 0x00B1;
+        private const int EM_GETSCROLLPOS = WM_USER + 221;
+        private const int EM_SETSCROLLPOS = WM_USER + 222;
+
+        [DllImport("user32.dll", EntryPoint = "SendMessage")]
+        private static extern IntPtr SendMessage(
+            IntPtr hWnd,
+            int msg,
+            IntPtr wParam,
+            ref Point lParam
+        );
+
+        [DllImport("user32.dll", EntryPoint = "SendMessage")]
+        private static extern IntPtr SendMessage(
+            IntPtr hWnd,
+            int msg,
+            ref int wParam,
+            ref int lParam
+        );
+
+        [DllImport("user32.dll", EntryPoint = "SendMessage")]
+        private static extern IntPtr SendMessage(
+            IntPtr hWnd,
+            int msg,
+            IntPtr wParam,
+            IntPtr lParam
+        );
+
+        #endregion
 
         public Form1()
         {
@@ -443,21 +481,24 @@ namespace AnotaRtf
 
         private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (tabControl.TabPages.Count == 1) return;
+            TabPage abaAtual = tabControl.SelectedTab;
 
-            if (tabControl.SelectedTab == placeholderTab)
+            if (abaAtual == null)
+                return;
+
+            if (EhAbaMais(abaAtual))
             {
-                int fileIndex = nextFileIndex++;
-                int visualCount = tabControl.TabPages.Count - 1;
-                string[] numbers = { "Um", "Dois", "Três", "Quatro", "Cinco", "Seis", "Sete", "Oito", "Nove", "Dez" };
-                string displayName = visualCount < numbers.Length ? numbers[visualCount] : visualCount.ToString();
-
-                CreateTab(fileIndex, displayName);
-                tabControl.SelectedTab = tabControl.TabPages[tabControl.TabPages.Count - 2];
-                SaveTabs();
-
-                Logger.Write($"[v1.5.0] Nova aba criada: '{displayName}' com fileIndex={fileIndex}");
+                // Aqui fica sua lógica atual de criar nova aba ao clicar no "+"
+                // Não remova o que você já tem.
+                return;
             }
+
+            RestaurarEstadoVisualAba(abaAtual);
+        }
+
+        private bool EhAbaMais(TabPage aba)
+        {
+            return aba != null && aba.Text == "+";
         }
 
         private void SaveTabs()
@@ -602,5 +643,218 @@ namespace AnotaRtf
 
         #endregion
 
+        #region GuardarEstadosDasAbas
+
+        private void SalvarEstadoVisualAba(TabPage aba)
+        {
+            Control editor = ObterControleEditorDaAba(aba);
+
+            if (editor == null || editor.IsDisposed)
+                return;
+
+            Point scrollPos = Point.Empty;
+            SendMessage(editor.Handle, EM_GETSCROLLPOS, IntPtr.Zero, ref scrollPos);
+
+            ObterSelecao(editor, out int selectionStart, out int selectionLength);
+
+            _estadoVisualPorAba[aba] = new EstadoVisualAba
+            {
+                SelectionStart = selectionStart,
+                SelectionLength = selectionLength,
+                ScrollPosition = scrollPos
+            };
+        }
+
+
+        private void ObterSelecao(Control editor, out int selectionStart, out int selectionLength)
+        {
+            selectionStart = 0;
+            selectionLength = 0;
+
+            if (editor == null || editor.IsDisposed)
+                return;
+
+            PropertyInfo propStart = editor.GetType().GetProperty("SelectionStart");
+            PropertyInfo propLength = editor.GetType().GetProperty("SelectionLength");
+
+            if (propStart != null && propLength != null)
+            {
+                object valorStart = propStart.GetValue(editor);
+                object valorLength = propLength.GetValue(editor);
+
+                if (valorStart is int start && valorLength is int length)
+                {
+                    selectionStart = start;
+                    selectionLength = length;
+                    return;
+                }
+            }
+
+            int inicio = 0;
+            int fim = 0;
+
+            SendMessage(editor.Handle, EM_GETSEL, ref inicio, ref fim);
+
+            selectionStart = inicio;
+            selectionLength = Math.Max(0, fim - inicio);
+        }
+
+        private void RestaurarEstadoVisualAba(TabPage aba)
+        {
+            if (aba == null)
+                return;
+
+            if (!_estadoVisualPorAba.TryGetValue(aba, out EstadoVisualAba estado))
+                return;
+
+            Control editor = ObterControleEditorDaAba(aba);
+
+            if (editor == null || editor.IsDisposed)
+                return;
+
+            BeginInvoke(new Action(() =>
+            {
+                if (editor.IsDisposed)
+                    return;
+
+                DefinirSelecao(editor, estado.SelectionStart, estado.SelectionLength);
+
+                Point scrollPos = estado.ScrollPosition;
+                SendMessage(editor.Handle, EM_SETSCROLLPOS, IntPtr.Zero, ref scrollPos);
+
+                editor.Focus();
+            }));
+        }
+
+        private Control ObterControleEditorDaAba(TabPage aba)
+        {
+            if (aba == null)
+                return null;
+
+            // Primeiro tenta encontrar um RichTextBox interno.
+            // Se o ATCRTF usa RichTextBox por dentro e ele estiver exposto na árvore de controles,
+            // este é o melhor alvo para seleção e scroll.
+            RichTextBox richTextBox = ProcurarControle<RichTextBox>(aba);
+
+            if (richTextBox != null)
+                return richTextBox;
+
+            // Se não encontrar RichTextBox, usa o próprio componente ATCRTF.
+            AtcCtrl.ATCRTF atcRtf = ProcurarControle<AtcCtrl.ATCRTF>(aba);
+
+            if (atcRtf != null)
+                return atcRtf;
+
+            return null;
+        }
+        private void DefinirSelecao(Control editor, int selectionStart, int selectionLength)
+        {
+            if (editor == null || editor.IsDisposed)
+                return;
+
+            selectionStart = Math.Max(0, selectionStart);
+            selectionLength = Math.Max(0, selectionLength);
+
+            PropertyInfo propTextLength = editor.GetType().GetProperty("TextLength");
+
+            if (propTextLength != null)
+            {
+                object valorTextLength = propTextLength.GetValue(editor);
+
+                if (valorTextLength is int textLength)
+                {
+                    selectionStart = Math.Min(selectionStart, textLength);
+                    selectionLength = Math.Min(selectionLength, textLength - selectionStart);
+                }
+            }
+
+            PropertyInfo propStart = editor.GetType().GetProperty("SelectionStart");
+            PropertyInfo propLength = editor.GetType().GetProperty("SelectionLength");
+
+            if (propStart != null && propLength != null && propStart.CanWrite && propLength.CanWrite)
+            {
+                propStart.SetValue(editor, selectionStart);
+                propLength.SetValue(editor, selectionLength);
+                return;
+            }
+
+            int selectionEnd = selectionStart + selectionLength;
+
+            SendMessage(
+                editor.Handle,
+                EM_SETSEL,
+                new IntPtr(selectionStart),
+                new IntPtr(selectionEnd)
+            );
+        }
+
+
+        private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //TabPage abaAtual = tabControl1.SelectedTab;
+
+            //if (abaAtual == null)
+            //    return;
+
+            //// Ignora aba "+"
+            //if (abaAtual.Text == "+")
+            //    return;
+
+            //RestaurarEstadoVisualAba(abaAtual);
+        }
+
+        private RichTextBox ObterRichTextBoxDaAba(TabPage aba)
+        {
+            return ProcurarControle<RichTextBox>(aba);
+        }
+
+        private T ProcurarControle<T>(Control controlePai) where T : Control
+        {
+            if (controlePai == null)
+                return null;
+
+            foreach (Control controle in controlePai.Controls)
+            {
+                if (controle is T encontrado)
+                    return encontrado;
+
+                T encontradoFilho = ProcurarControle<T>(controle);
+
+                if (encontradoFilho != null)
+                    return encontradoFilho;
+            }
+
+            return null;
+        }
+
+        private int ObterFileIndexDaAba(TabPage aba)
+        {
+            //if (aba.Tag is int fileIndex)
+            //    return fileIndex;
+
+            //return tabControl1.TabPages.IndexOf(aba);
+            return 0;
+        }
+
+        private void TabControl_Deselecting(object sender, TabControlCancelEventArgs e)
+        {
+            if (e.TabPage == null)
+                return;
+
+            if (EhAbaMais(e.TabPage))
+                return;
+
+            SalvarEstadoVisualAba(e.TabPage);
+        }
+        #endregion
+
     }
+
+    public class EstadoVisualAba
+    {
+        public int SelectionStart { get; set; }
+        public int SelectionLength { get; set; }
+        public Point ScrollPosition { get; set; }
+    }
+
 }

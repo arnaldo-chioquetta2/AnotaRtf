@@ -1,39 +1,157 @@
-{\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fswiss\fprq2\fcharset0 Segoe UI;}{\f1\fnil Segoe UI;}}
-{\colortbl ;\red255\green0\blue0;\red0\green0\blue0;}
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fswiss\fprq2\fcharset0 Segoe UI;}}
+{\colortbl ;\red0\green128\blue0;\red255\green165\blue0;\red0\green0\blue255;\red255\green0\blue0;}
 {\*\generator Riched20 10.0.19041}\viewkind4\uc1 
-\pard\nowidctlpar\f0\fs30\lang1046 colocar o cep do entregador certo\par
-verificar a grava\'e7\'e3o dos valores na tabela \cf1 tt_entregatudo_config\cf0\par
-no metodo \cf1 saveConfigurations\cf0\par
+\pard\cf1\f0\fs30\lang1046 Etapa 1\par
 \par
-sistema com ia de sugest\'f5es de novos sabores na pagina\par
+Confirmar o diagn\'f3stico do erro atual\par
 \par
-colocar registro s\'f3 por convite no app\par
+Subetapa 1.1\par
 \par
-findi\par
-historia 1\par
-hqzim\par
-hist\'f3ria 2\par
-7bc\par
+Validar se o CPF do comprador est\'e1 chegando no fluxo.\par
+Resumo confirmar que o cadastro j\'e1 preenche o documento usado no Pix.\par
+Fonte prov\'e1vel OrderPaymentService, PedidoController, cadastro do usu\'e1rio. \par
+\cf0\par
+\cf1 Subetapa 1.2\par
 \par
-configurar a dist\'e2ncia maxima\par
-Direcionamento de viagem\par
+Validar se o payload envia payer.identification.number corretamente.\par
+Resumo garantir que o CPF enviado ao gateway \'e9 o do comprador e vai sem m\'e1scara.\par
+Fonte prov\'e1vel MercadoPagoService::createPixPayment, logs do pagamento. \par
 \par
-[    ]  Login Google no celular\par
-\cf2 [    ]  Carregamento dos dados da loja n\'e3o vem\par
-\cf0         - Tipo de enrega\par
-        - Produtos vendidos\par
-        -  Nome da loja \par
-[    ]  Arrumar a edi\'e7\'e3o da pagina o layout\par
-[    ]  Arrumar o layout da pagina do logista, para celular\par
-[    ]  Pagina para adm da EntregaTudo\par
-  [    ] Ver novos cadastros de MotoBoys\par
-  [    ] Ver motoBoys on Line\par
-  [    ] Ver valores a receber de cada\par
-  [    ] Ver entregas e qtd km rodado\par
-[    ]  Usar API para validar o CNH\par
-   [    ] App\par
-   [    ] Site\par
-[    ]  Prever erro 500 no site e mandar recarregar a \'faltima pagina, logado\par
-
-\pard\f1\fs18\par
+Subetapa 1.3\par
+\par
+Confirmar a causa funcional do 401.\par
+Resumo verificar incompatibilidade entre ambiente test e credencial live.\par
+Fonte prov\'e1vel MercadoPagoService, config/services.php, .env, logs. \par
+\cf0\par
+\cf2 Etapa 2\par
+\par
+Garantir CPF obrigat\'f3rio no fluxo de gera\'e7\'e3o do Pix\par
+\par
+Subetapa 2.1\par
+\par
+Validar CPF antes de tentar criar o pagamento.\par
+Resumo bloquear a gera\'e7\'e3o do Pix se o comprador n\'e3o tiver CPF.\par
+Fonte prov\'e1vel OrderPaymentService::createPixForOrder, loadOrderData. \par
+\par
+Subetapa 2.2\par
+\par
+Padronizar o documento do comprador.\par
+Resumo normalizar CPF para s\'f3 n\'fameros e definir type como CPF.\par
+Fonte prov\'e1vel MercadoPagoService::createPixPayment. \par
+\par
+Subetapa 2.3\par
+\par
+Retornar erro claro para o checkout quando faltar CPF.\par
+Resumo n\'e3o deixar o fluxo cair em erro gen\'e9rico do gateway.\par
+Fonte prov\'e1vel OrderPaymentService, PedidoController::PagtoPix, PagtoPixIndisponivel. \par
+\par
+Etapa 3\par
+\par
+Revisar credenciais e ambiente do Mercado Pago\par
+\par
+Subetapa 3.1\par
+\par
+Mapear qual ambiente a aplica\'e7\'e3o considera ativo.\par
+Resumo identificar de onde sai a no\'e7\'e3o de test ou production.\par
+Fonte prov\'e1vel config/services.php, .env, tt_config se houver apoio. \par
+\par
+Subetapa 3.2\par
+\par
+Mapear quais credenciais est\'e3o sendo usadas na chamada.\par
+Resumo conferir access token, public key e prefixo real do token.\par
+Fonte prov\'e1vel MercadoPagoService, logs, .env. \par
+\par
+Subetapa 3.3\par
+\par
+Bloquear combina\'e7\'e3o inv\'e1lida de ambiente e token.\par
+Resumo impedir test com APP_USR ou production com credencial de teste.\par
+Fonte prov\'e1vel MercadoPagoService::createPixPayment, classe de configura\'e7\'e3o do gateway. \cf0\par
+\par
+\cf3 Subetapa 3.4\par
+\par
+Padronizar a leitura das credenciais por ambiente.\par
+Resumo evitar ambiguidade entre chave de teste e chave produtiva.\par
+Fonte prov\'e1vel config/services.php, .env, MercadoPagoService. \cf0\par
+\par
+Etapa 4\par
+\par
+Ajustar o MercadoPagoService para valida\'e7\'e3o pr\'e9via\par
+\par
+Subetapa 4.1\par
+\par
+Adicionar valida\'e7\'e3o de ambiente antes do POST.\par
+Resumo falhar cedo com mensagem interna clara se a credencial for incompat\'edvel.\par
+Fonte prov\'e1vel MercadoPagoService::createPixPayment. \par
+\par
+Subetapa 4.2\par
+\par
+Ampliar logs t\'e9cnicos da chamada.\par
+Resumo registrar environment, token prefix, payment_method_id e presen\'e7a do CPF.\par
+Fonte prov\'e1vel MercadoPagoService::createPixPayment, LoggerService. \par
+\par
+Subetapa 4.3\par
+\par
+Padronizar o retorno de erro do gateway.\par
+Resumo devolver mensagem \'fatil para o controller quando houver 401 por credencial.\par
+Fonte prov\'e1vel MercadoPagoService, OrderPaymentService. \par
+\par
+Etapa 5\par
+\par
+Ajustar a orquestra\'e7\'e3o do checkout\par
+\par
+Subetapa 5.1\par
+\par
+Bloquear a cria\'e7\'e3o do Pix sem CPF v\'e1lido.\par
+Resumo o OrderPaymentService n\'e3o deve chamar o gateway sem documento.\par
+Fonte prov\'e1vel OrderPaymentService::createPixForOrder. \par
+\par
+Subetapa 5.2\par
+\par
+Exibir orienta\'e7\'e3o clara ao usu\'e1rio ou operador.\par
+Resumo informar aus\'eancia de CPF ou incompatibilidade de ambiente sem erro obscuro.\par
+Fonte prov\'e1vel PedidoController::PagtoPix, PagtoPixIndisponivel. \par
+\par
+Subetapa 5.3\par
+\par
+Preservar a rastreabilidade da tentativa falha.\par
+Resumo registrar motivo da recusa antes da chamada ou retorno 401 do gateway.\par
+Fonte prov\'e1vel PaymentTransactionService, logs, tt_pedido. \par
+\par
+Etapa 6\par
+\par
+Validar o fluxo em ambiente de teste\par
+\par
+Subetapa 6.1\par
+\par
+Executar PagtoPix com comprador que tenha CPF cadastrado.\par
+Resumo confirmar que o payload sai completo.\par
+Fonte prov\'e1vel cadastro do comprador, PedidoController, MercadoPagoService. \par
+\par
+Subetapa 6.2\par
+\par
+Verificar logs da chamada.\par
+Resumo conferir environment=test e payer.identification.number preenchido.\par
+Fonte prov\'e1vel LoggerService, logs do gateway. \par
+\par
+Subetapa 6.3\par
+\par
+Confirmar que o 401 deixou de ocorrer.\par
+Resumo a resposta do gateway deve sair do erro de credencial incompat\'edvel.\par
+Fonte prov\'e1vel logs de resposta, MercadoPagoService. \par
+\par
+Subetapa 6.4\par
+\par
+Confirmar gera\'e7\'e3o normal da cobran\'e7a Pix.\par
+Resumo esperar retorno com payment id, qr code e status padr\'e3o do gateway.\par
+Fonte prov\'e1vel OrderPaymentService, PaymentTransactionService, PagtoPix. \par
+\par
+Pr\'f3xima sugest\'e3o mais \'fatil\par
+\par
+Me mostre o m\'e9todo atual completo `app/Services/Payments/MercadoPagoService.php::createPixPayment` para eu transformar essa an\'e1lise em altera\'e7\'e3o concreta sem chute.\par
+\par
+\cf4 refatorar\par
+app\\Services\\Payments\\MercadoPagoService.php\par
+    createPixPayment\par
+app\\Services\\Payments\\OrderPaymentService.php\par
+    createPixForOrder\par
 }
