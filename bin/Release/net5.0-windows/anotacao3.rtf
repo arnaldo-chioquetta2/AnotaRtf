@@ -67,13 +67,13 @@ Bloquear combina\'e7\'e3o inv\'e1lida de ambiente e token.\par
 Resumo impedir test com APP_USR ou production com credencial de teste.\par
 Fonte prov\'e1vel MercadoPagoService::createPixPayment, classe de configura\'e7\'e3o do gateway. \cf0\par
 \par
-\cf3 Subetapa 3.4\par
+\cf1 Subetapa 3.4\par
 \par
 Padronizar a leitura das credenciais por ambiente.\par
 Resumo evitar ambiguidade entre chave de teste e chave produtiva.\par
-Fonte prov\'e1vel config/services.php, .env, MercadoPagoService. \cf0\par
-\par
-Etapa 4\par
+Fonte prov\'e1vel config/services.php, .env, MercadoPagoService. \par
+\cf0\par
+\cf3 Etapa 4\par
 \par
 Ajustar o MercadoPagoService para valida\'e7\'e3o pr\'e9via\par
 \par
@@ -82,7 +82,7 @@ Subetapa 4.1\par
 Adicionar valida\'e7\'e3o de ambiente antes do POST.\par
 Resumo falhar cedo com mensagem interna clara se a credencial for incompat\'edvel.\par
 Fonte prov\'e1vel MercadoPagoService::createPixPayment. \par
-\par
+\cf0\par
 Subetapa 4.2\par
 \par
 Ampliar logs t\'e9cnicos da chamada.\par

@@ -1,5 +1,5 @@
 {\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Arial;}}
-{\colortbl ;\red0\green128\blue0;\red0\green0\blue255;}
+{\colortbl ;\red0\green128\blue0;\red0\green0\blue255;\red255\green0\blue0;}
 {\*\generator Riched20 10.0.19041}\viewkind4\uc1 
 \pard\fs26\lang1046 An\'e1lise da demanda para implementa\'e7\'e3o no sistema de moedas\par
 \par
@@ -31,46 +31,33 @@ Planejar inclus\'e3o de corretora_origem e corretora_destino.\par
 \par
 Garantir compatibilidade com opera\'e7\'f5es antigas que n\'e3o tinham corretora.\par
 \cf0\par
-\cf2 1.3. Mapear onde hoje o sistema calcula patrim\'f4nio\par
+\cf1 1.3. Mapear onde hoje o sistema calcula patrim\'f4nio\par
 \par
 Localizar c\'e1lculo atual do total consolidado.\par
 \par
 Verificar se ele usa cr_user diretamente, cr_daily, cr_prices ou classe intermedi\'e1ria como CryptoPrice.\par
 \par
-Adaptar o c\'e1lculo para agrupar primeiro por corretora e depois consolidar.\cf0\par
-\par
-1.4. Mapear onde hoje o sistema recomenda compra ou troca\par
-\par
+Adaptar o c\'e1lculo para agrupar primeiro por corretora e depois consolidar.\par
+\cf0\par
+\cf1 1.4. Mapear onde hoje o sistema recomenda compra ou troca\par
 Identificar o ponto do algoritmo que compara oportunidades entre moedas.\par
-\par
 Separar a l\'f3gica atual de compara\'e7\'e3o de rentabilidade da nova l\'f3gica de custo por corretora.\par
-\par
 A decis\'e3o final n\'e3o deve olhar apenas moeda e pre\'e7o, mas moeda, corretora, rota e taxa.\par
-\par
-2. Etapa de modelagem de corretoras\par
-\par
+\cf0\par
+\cf2 2. Etapa de modelagem de corretoras\par
 2.1. Criar conceito formal de corretora\par
-\par
 Criar uma tabela de corretoras ou uma configura\'e7\'e3o controlada.\par
-\par
 Sugest\'e3o de tabela: cr_exchanges.\par
-\par
 Campos m\'ednimos sugeridos:\par
 \par
 id\par
-\par
 name\par
-\par
 code\par
-\par
 active\par
-\par
 is_default\par
-\par
 created_at\par
-\par
 updated_at\par
-\par
+\cf0\par
 2.2. Cadastrar corretoras iniciais\par
 \par
 Cadastrar a corretora atual j\'e1 integrada, assumida como MercadoPago pela premissa da especifica\'e7\'e3o.\par
@@ -725,5 +712,9 @@ O patrim\'f4nio ser\'e1 exibido por corretora e consolidado.\par
 \par
 O algoritmo conseguir\'e1 escolher a melhor rota considerando custo total, taxa zero e restri\'e7\'f5es de corretora.\par
 \par
-O desenho ficar\'e1 preparado para adicionar novas corretoras depois sem alterar a l\'f3gica principal.\fs22\par
+O desenho ficar\'e1 preparado para adicionar novas corretoras depois sem alterar a l\'f3gica principal.\par
+\par
+\cf3\b REFATORAR\par
+app\\Services\\Payments\\MercadoPagoService.php\par
+    createPixPayment\b0\fs22\par
 }

@@ -1,90 +1,81 @@
 {\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Arial;}}
-{\colortbl ;\red0\green128\blue0;\red0\green0\blue255;\red255\green0\blue0;}
+{\colortbl ;\red0\green128\blue0;\red0\green0\blue0;\red0\green0\blue255;\red255\green0\blue0;}
 {\*\generator Riched20 10.0.19041}\viewkind4\uc1 
-\pard\cf1\fs28\lang1046 Etapa 1 Entender como o sistema salva configura\'e7\'f5es hoje\par
+\pard\cf1\fs28\lang1046 Etapa 1 Identificar todos os pontos que usam AppData\par
 Sub-etapas\par
-Identificar onde as configura\'e7\'f5es atuais s\'e3o persistidas\par
-Verificar se h\'e1 uso de INI JSON XML ou AppData\par
-Localizar classes existentes como ConfigManager ou similares\par
-Entender como a tela principal carrega dados ao iniciar\par
-Definir onde os projetos ser\'e3o armazenados\par
-\cf0\par
-\cf1 Etapa 2 Criar o modelo de Projeto\par
+Localizar usos de `Environment.SpecialFolder.ApplicationData`\par
+Verificar `ConfigManager.cs`\par
+Verificar `ProjetoRepository.cs`\par
+Verificar qualquer outro repository ou loader\par
+Listar todos os arquivos gravados hoje em `%APPDATA%\\atcIA`\par
+\cf2\par
+\cf3 Etapa 2 Definir nova pasta de dados\par
 Sub-etapas\par
-Criar classe Projeto\par
-Definir propriedade Id como identificador \'fanico\par
-Definir propriedade Nome\par
-Definir propriedade Caminho\par
-Garantir valida\'e7\'e3o b\'e1sica de campos obrigat\'f3rios\par
-\cf0\par
-\cf1 Etapa 3 Criar persist\'eancia dos projetos\par
+Usar uma pasta chamada `dados` junto ao execut\'e1vel\par
+Definir caminho base com `AppDomain.CurrentDomain.BaseDirectory`\par
+Montar caminho final como `bin\\x64\\Debug\\dados` em desenvolvimento\par
+Em produ\'e7\'e3o, usar `pasta_do_exe\\dados`\par
+\cf2\par
+Etapa 3 Criar helper central de caminhos\par
 Sub-etapas\par
-Definir local do arquivo de armazenamento\par
-Criar classe ProjetoRepository\par
-Implementar m\'e9todo Listar\par
-Implementar m\'e9todo Salvar\par
-Implementar m\'e9todo BuscarPorId se necess\'e1rio\par
+Criar classe `AppPaths` ou similar\par
+Criar propriedade `BaseDir`\par
+Criar propriedade `DadosDir`\par
+Criar m\'e9todo para garantir cria\'e7\'e3o da pasta\par
+Evitar repetir `Path.Combine(...)` em v\'e1rias classes\par
+\par
+Etapa 4 Alterar ConfigManager\par
+Sub-etapas\par
+Trocar `%APPDATA%\\atcIA\\config.json` por `dados\\config.json`\par
+Garantir cria\'e7\'e3o autom\'e1tica da pasta `dados`\par
+Manter o mesmo formato JSON atual\par
+Preservar m\'e9todos existentes como `GetApiKey`, `SaveApiKey`, `GetLastProjectId`\par
+\par
+Etapa 5 Alterar ProjetoRepository\par
+Sub-etapas\par
+Trocar `%APPDATA%\\atcIA\\projetos.json` por `dados\\projetos.json`\par
 Garantir cria\'e7\'e3o autom\'e1tica da pasta\par
-Garantir que n\'e3o sobrescreve dados existentes incorretamente\cf2\par
-\cf0\par
-\cf1 Etapa 4 Alterar a tela principal\par
-Sub-etapas\par
-Adicionar ComboBox para projetos\par
-Adicionar bot\'e3o Adicionar tarefa\par
-Configurar DisplayMember e ValueMember do combo\par
-Criar m\'e9todo CarregarProjetos\par
-Criar m\'e9todo SelecionarProjeto\par
-Carregar projetos ao iniciar a tela\par
-Salvar sele\'e7\'e3o atual ao trocar o projeto\par
-\cf0\par
-\cf1 Etapa 5 Criar tela de cadastro de projeto\par
-Sub-etapas\par
-Criar formul\'e1rio de cadastro\par
-Adicionar campo Nome\par
-Adicionar campo Caminho\par
-Adicionar bot\'e3o Salvar\par
-Adicionar bot\'e3o Cancelar\par
-Adicionar bot\'e3o Navegar\par
-Validar campos obrigat\'f3rios\par
-Implementar fechamento com OK ou Cancel\cf2\par
-\cf0\par
-\cf1 Etapa 6 Implementar navega\'e7\'e3o de caminho\par
-Sub-etapas\par
-Definir se ser\'e1 sele\'e7\'e3o de pasta ou arquivo\par
-Implementar uso de FolderBrowserDialog ou OpenFileDialog\par
-Preencher o campo Caminho ap\'f3s sele\'e7\'e3o\par
-Garantir que o caminho selecionado seja v\'e1lido\par
-\cf0\par
-\cf1 Etapa 7 Integrar cadastro com tela principal\par
-Sub-etapas\par
-Abrir tela de cadastro ao clicar no bot\'e3o\par
-Verificar retorno DialogResult OK\par
-Recarregar lista de projetos\par
-Selecionar automaticamente o projeto rec\'e9m criado\cf2\par
-\cf0\par
-\cf2 Etapa 8 Garantir recarregamento autom\'e1tico\par
-Sub-etapas\par
-Expor o projeto salvo na tela de cadastro\par
-Recarregar o combo ap\'f3s salvar\par
-Manter consist\'eancia da sele\'e7\'e3o\par
-Tratar caso n\'e3o existam projetos\par
-\cf0\par
-Etapa 9 Persistir projeto selecionado\par
-Sub-etapas\par
-Salvar o Id do projeto ativo\par
-Recuperar o Id ao iniciar o sistema\par
-Selecionar automaticamente o projeto salvo\par
-Atualizar a persist\'eancia ao trocar sele\'e7\'e3o\par
+Manter m\'e9todos `Listar`, `Salvar`, `BuscarPorId`\par
+Garantir que n\'e3o sobrescreve registros indevidamente\par
 \par
-Etapa 10 Testes manuais\par
+Etapa 6 Avaliar migra\'e7\'e3o dos dados antigos\par
 Sub-etapas\par
-Validar carregamento inicial do combo\par
-Validar abertura da tela de cadastro\par
-Validar preenchimento e navega\'e7\'e3o de caminho\par
-Validar salvamento e atualiza\'e7\'e3o do combo\par
-Validar sele\'e7\'e3o autom\'e1tica ap\'f3s salvar\par
-Validar cancelamento sem altera\'e7\'f5es\par
-Validar persist\'eancia ap\'f3s reiniciar o sistema\par
+Verificar se j\'e1 existem dados em `%APPDATA%\\atcIA`\par
+Decidir se o sistema deve migrar automaticamente\par
+Se migrar, copiar `config.json` e `projetos.json` para `dados` quando ainda n\'e3o existirem\par
+Logar que a migra\'e7\'e3o foi feita\par
 \par
-\cf3\b FAZER A CONFIGURA\'c7\'c3O RETORNAR PARA FORMA LOCAL\cf0\b0\fs22\par
+Etapa 7 Ajustar arquivos ignorados no Git\par
+Sub-etapas\par
+Adicionar `dados/` no `.gitignore`\par
+Garantir que chaves e projetos locais n\'e3o sejam enviados ao reposit\'f3rio\par
+Opcionalmente criar `dados/.gitkeep` se quiser versionar s\'f3 a pasta vazia\par
+\par
+Etapa 8 Testar funcionamento\par
+Sub-etapas\par
+Apagar ou renomear a pasta antiga em AppData para testar do zero\par
+Executar o programa\par
+Salvar chave da API\par
+Salvar caminho do prompt\par
+Cadastrar projeto\par
+Confirmar cria\'e7\'e3o da pasta `dados` ao lado do execut\'e1vel\par
+Confirmar cria\'e7\'e3o de `config.json`\par
+Confirmar cria\'e7\'e3o de `projetos.json`\par
+Fechar e abrir o programa\par
+Confirmar que as configura\'e7\'f5es e projetos foram recarregados corretamente\par
+\par
+Etapa 9 Limpeza final\par
+Sub-etapas\par
+Remover refer\'eancias restantes a AppData\par
+Remover c\'f3digo duplicado de caminho\par
+Padronizar todas as classes para usar `AppPaths.DadosDir`\par
+Confirmar que o sistema funciona em Debug e Release\par
+\cf0\par
+\cf4 Refatorar\par
+app\\Http\\Controllers\\CryptoController.remote.bak.php\par
+    processBuy\par
+    getInvestmentData\par
+    processConversion    \par
+\cf0\par
+\cf4\b FAZER A CONFIGURA\'c7\'c3O RETORNAR PARA FORMA LOCAL\cf0\b0\fs22\par
 }

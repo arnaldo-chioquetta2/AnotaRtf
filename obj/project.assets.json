@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     "net5.0-windows7.0": {
-      "AtcCtrl/1.3.1": {
+      "AtcCtrl/1.3.2": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.8",
         "dependencies": {
@@ -28,7 +28,7 @@
     }
   },
   "libraries": {
-    "AtcCtrl/1.3.1": {
+    "AtcCtrl/1.3.2": {
       "type": "project",
       "path": "../../../T-Bonifacio/AtcCtrl/AtcCtrl/AtcCtrl.csproj",
       "msbuildProject": "../../../T-Bonifacio/AtcCtrl/AtcCtrl/AtcCtrl.csproj"
@@ -41,7 +41,7 @@
   },
   "projectFileDependencyGroups": {
     "net5.0-windows7.0": [
-      "AtcCtrl >= 1.3.1"
+      "AtcCtrl >= 1.3.2"
     ]
   },
   "packageFolders": {
