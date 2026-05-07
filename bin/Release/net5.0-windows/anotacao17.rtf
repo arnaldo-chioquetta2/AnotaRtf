@@ -1,0 +1,78 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Arial;}}
+{\colortbl ;\red0\green0\blue0;\red0\green128\blue0;\red255\green165\blue0;\red0\green0\blue255;}
+{\*\generator Riched20 10.0.19041}\viewkind4\uc1 
+\pard\cf1\fs28\lang1046 ETAPA 1: Estrutura Minima de Dados\par
+Objetivo: \cf2 Garantir que o modelo base da tarefa exista e compile.\par
+Instrucao logica para o AI: Crie uma classe Tarefa com as propriedades estritamente necessarias para o algoritmo funcionar: Id (string), Nome (string), Prioridade (int), TempoAcumulado (int, em segundos), Habilitado (bool). Adicione um construtor padrao que inicialize TempoAcumulado como 0 e Habilitado como true. Nao adicione metodos, nem filtros, nem calculos. Apenas o modelo de dados.\par
+O que testar e debugar: Instancie a classe manualmente e verifique se os tipos estao corretos. Verifique se a classe e serializavel ou deserializavel, caso seu programa use JSON, XML ou banco de dados. Confirme que nao ha propriedades desnecessarias ou referencias circulares.\par
+\cf3\b Tarefa.cs\b0\par
+\cf1\par
+ETAPA 2: Controle de Tempo Local (Cronometro)\par
+Objetivo: \par
+\par
+\cf2 Implementar a logica de contagem de segundos sem depender de servidor.\par
+Instrucao logica para o AI: Crie uma classe ou servico GestorDeTempo que receba o Id da tarefa. Implemente Iniciar(id): registra o timestamp atual em memoria para esse ID. Se ja estiver rodando, ignora. Implemente Parar(id): calcula a diferenca entre o timestamp atual e o registrado, retorna o valor em segundos inteiros e limpa o registro da memoria. Implemente ObterTempoEmExecucao(id): retorna os segundos decorridos ate o momento, sem limpar o registro.\par
+\cf3\b GestorDeTempo.cs\par
+\cf1\b0\par
+ETAPA 3: Filtro Contextual (Dia e Janela de Horario)\par
+Objetivo: \par
+\par
+\cf2 Adicionar regras de visibilidade baseadas no momento atual.\par
+Instrucao logica para o AI: Na classe Tarefa, adicione as propriedades: DiaSemana (bool), Sabado (bool), Domingo (bool), HrInicio (int opcional), HrFim (int opcional). Crie um metodo DeveExibir(agora) que receba um DateTime e retorne bool. Logica do metodo: Se Habilitado for falso, retorne falso. Verifique o dia da semana de agora. Se for sabado, use Sabado. Se for domingo, use Domingo. Caso contrario, use DiaSemana. Se o dia nao for permitido, retorne falso. Calcule minutoAtual como agora.Hour multiplicado por 60 mais agora.Minute. Se HrInicio existir e for maior que zero, e minutoAtual for menor que HrInicio, retorne falso. Se HrFim existir e for maior que zero, e minutoAtual for maior que HrFim, retorne falso. Retorne verdadeiro.\par
+Tarefa.cs\par
+\cf1\par
+ETAPA 4: Calculo do Peso Matematico\par
+Objetivo: \par
+\par
+\cf2 Implementar a formula exponencial original.\par
+Instrucao logica para o AI: Crie um metodo estatico CalcularPeso(tarefa) que retorne double. Aplique exatamente esta formula: peso igual a tarefa.TempoAcumulado multiplicado por ((1.08 elevado a tarefa.Prioridade menos 1.08) mais 1). Se Prioridade for menor ou igual a zero, retorne apenas TempoAcumulado. Use a funcao de potencia padrao da linguagem. Nao aproxime valores intermediarios.\par
+\cf3\b Tarefa.cs\par
+\cf1\b0\par
+ETAPA 5: Motor de Priorizacao Completo\par
+Objetivo: \par
+\par
+\cf2 Unir filtro, calculo e ordenacao para gerar a lista sugerida.\par
+Instrucao logica para o AI: Crie um metodo ObterTarefasPriorizadas(listaDeTarefas, agora) que retorne uma lista ordenada. Pipeline interno: Filtre a lista de tarefas usando DeveExibir(agora). Para cada tarefa filtrada, calcule o Peso usando CalcularPeso. Ordene a lista pelo Peso em ordem crescente, onde menor peso significa primeira posicao. Atribua uma propriedade Posicao sequencial (1, 2, 3) ao resultado. Retorne a lista final. A tarefa na posicao 1 e a sugerida.\par
+\cf0\par
+ETAPA 6: Consistencia de Estado em Tempo Real\par
+Objetivo: \par
+\par
+\cf2 Garantir que o calculo de prioridade considere tarefas em execucao sem corromper dados persistentes.\par
+Instrucao logica para o AI: Ao calcular o peso de uma tarefa que esta EmAndamento, some temporariamente o TempoEmExecucaoAtual ao TempoAcumulado apenas para o calculo, sem alterar o valor base da tarefa. Garanta que o TempoAcumulado so seja atualizado permanentemente quando Parar(id) for chamado e o retorno for salvo no armazenamento local. Previna condicoes de corrida se o motor de priorizacao for chamado enquanto o cronometro esta ativo.\par
+\par
+\cf3\b\fs34 Faze 2\cf2\b0\fs28\par
+\cf0\par
+ETAPA 1: ADICAO DO COMPONENTE DE SELECAO NA INTERFACE\par
+Objetivo: \par
+\par
+\cf2 Inserir o controle visual de prioridade no formulario de nova tarefa e na tela de notas.\par
+Instrucao logica para o AI: Na tela de cadastro de nova tarefa, adicione um componente de selecao unica (\b combo box ou dropdown\b0 ) com valores numericos de 1 a 10. Vincule o valor selecionado a propriedade Prioridade do objeto Tarefa antes de confirmar o cadastro. Na tela de notas existente, adicione o mesmo componente de selecao logo acima ou abaixo do campo de texto, mantendo o botao OK como unica acao de salvamento.\par
+\par
+\cf0\par
+ETAPA 2: MIGRACAO E DEFAULT DE DADOS PARA TAREFAS EXISTENTES\par
+Objetivo: \par
+\par
+\cf2 Garantir que todas as tarefas ja salvas recebam prioridade 10 sem corromper dados existentes.\par
+Instrucao logica para o AI: No momento de inicializacao do programa, ou no carregamento da lista de tarefas do armazenamento local, implemente uma verificacao de versao ou de campo faltante. Se a propriedade Prioridade nao existir, for nula, ou estiver fora do intervalo 1 a 10, atribua automaticamente o valor 10. Salve essa atualizacao de volta no armazenamento apenas se o valor foi alterado. Nao sobrescreva prioridades que ja foram definidas pelo usuario.\par
+\cf0\par
+ETAPA 3: VINCULACAO DE EVENTOS E SINCRONIZACAO UI-MODELO\par
+Objetivo: \par
+\par
+\cf4 Conectar as alteracoes visuais da prioridade ao motor de ordenacao e atualizar a lista em tempo real.\par
+Instrucao logica para o AI: Ao clicar em OK na tela de notas, ou ao confirmar o cadastro de nova tarefa, capture o valor selecionado no combo, atualize a propriedade Prioridade no objeto Tarefa correspondente e dispare um evento ou chamada para o Motor de Priorizacao. Apos receber a lista reordenada, atualize a exibicao principal (grid ou lista) sem recarregar toda a aplicacao. Garanta que o combo reflita o valor correto se a tela for reaberta.\par
+O que testar e debugar: Altere a prioridade de uma tarefa via combo e clique OK. Verifique se a posicao da tarefa na lista principal muda conforme esperado. Abra a mesma tarefa novamente e confirme se o combo mostra o valor salvo. Teste trocas rapidas de prioridade e verifique se a UI nao congela ou exibe posicoes desatualizadas.\par
+\cf0\par
+ETAPA 4: INTEGRACAO COM CAMADA DE PERSISTENCIA\par
+Objetivo: \par
+\par
+\cf1 Assegurar que a prioridade seja gravada e lida corretamente do armazenamento local junto com os demais dados.\par
+Instrucao logica para o AI: Modifique os metodos de salvamento e carregamento do programa para incluir a propriedade Prioridade no contrato de dados (JSON, XML, banco ou arquivo texto). Ao serializar, garanta que o tipo seja inteiro e o nome da chave seja explicito. Ao deserializar, trate a ausencia do campo aplicando a regra de default 10. Nao quebre a leitura de versoes anteriores do arquivo de dados.\par
+\cf0\par
+ETAPA 5: TRATAMENTO DE FALHAS E FALLBACK DE INTERFACE\par
+Objetivo: \par
+\par
+\cf1 Prevenir travamentos quando dados de prioridade estao corrompidos, fora do intervalo ou a interface falha ao renderizar.\par
+Instrucao logica para o AI: Adicione validacao de entrada antes de atribuir o valor do combo ao modelo. Se o valor for menor que 1 ou maior que 10, force para 1 ou 10 respectivamente e logue o aviso internamente. Se o carregamento do combo falhar por falta de recursos ou erro de binding, exiba um estado padrao (prioridade 10 selecionada) e permita ao usuario redefinir manualmente. Garanta que qualquer excecao na atualizacao de prioridade nao impeca o salvamento das anotacoes de texto.\par
+\cf0\par
+\par
+}

@@ -1,61 +1,35 @@
 {\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Arial;}}
-{\colortbl ;\red0\green128\blue0;}
+{\colortbl ;\red0\green128\blue0;\red0\green0\blue0;\red0\green0\blue255;}
 {\*\generator Riched20 10.0.19041}\viewkind4\uc1 
-\pard\cf1\fs24\lang1046 Corre\'e7\'e3o do "Sumi\'e7o" dos Dados (Tela em Branco):\par
+\pard\cf1\fs26\lang1046 Planejamento de Ajustes Tecnicos para o Sistema de Escalas\par
 \par
-        Aplicar a corre\'e7\'e3o do WorkingDirectory no arquivo Program.cs.\par
+Etapa 1 Ajustes na Interface do Usuario WinForms\par
 \par
-        Testar a abertura via Atualizador para garantir que os dados carregam.\par
+1.1 Acessar o arquivo MainForm no modo Design para corrigir a duplicidade de colunas.\par
+1.2 Selecionar o componente dgvEscalaCongregacao referente a grade de insercao da direita.\par
+1.3 Alterar a propriedade AutoGenerateColumns para False via codigo ou painel de propriedades, evitando a criacao automatica de colunas indesejadas na execucao.\par
+1.4 Acessar o editor de colunas do grid e remover as colunas antigas que nao pertencem mais a classe, como Louvor, Som e Observacoes.\par
+1.5 Manter apenas duas colunas principais e revisar o binding, vinculando o DataPropertyName da primeira coluna para a propriedade Dia e o da segunda para Escalado.\par
+\cf2\par
+\cf3 Etapa 2 Implementacao da Logica de Template no Backend\par
 \par
-    Refinamento de UX (A Op\'e7\'e3o que "Sumiu"):\par
+2.1 Localizar o metodo btnNovaCongregacao_Click no arquivo de classe MainForm.cs.\par
+2.2 Adicionar a blindagem de controle de estado utilizando a variavel booleana de carregamento no inicio e no bloco finally, prevenindo o disparo prematuro de eventos de alteracao de texto.\par
+2.3 Implementar a logica de leitura do objeto Sede persistido no modelo global do mes.\par
+2.4 Criar uma estrutura de repeticao que percorra a lista de culto publico de domingo registrada na Sede.\par
+2.5 Para cada iteracao, instanciar um novo objeto de linha da congregacao, extraindo e copiando apenas a propriedade Dia da Sede, definindo a propriedade de responsavel como uma string vazia.\par
+2.6 Implementar uma logica de seguranca criando cinco linhas em branco caso a Sede seja nula ou ainda nao possua dados inseridos.\par
 \par
-        Adicionar um t\'edtulo visualmente claro e de destaque no topo da coluna da direita (ex: um Label grande com fundo diferenciado escrito "GERENCIAMENTO DE CONGREGA\'c7\'d5ES").\par
+Etapa 3 Gerenciamento de Memoria e Sincronizacao\par
 \par
-        Isso educa o usu\'e1rio visualmente de que a aba n\'e3o sumiu, apenas mudou de lugar.\par
+3.1 Garantir a execucao do metodo de sincronizacao da tela para o objeto antes de inicializar uma nova congregracao, preservando os dados digitados na aba anterior.\par
+3.2 Apos a inclusao do novo objeto mapeado na lista do sistema, invocar o metodo de preenchimento da tela para forcar o redesenho limpo e seguro do DataGridView.\par
+3.3 Esvaziar programaticamente os textboxes do distrito, mes e descricao da sede, preservando o estado visual da cidade e do nome da igreja para agilizar a digitacao.\par
+3.4 Forcar a atualizacao do label de indice para refletir a nova contagem exata da colecao.\par
 \par
-    Valida\'e7\'e3o do Layout 1.5:\par
+Etapa 4 Validacao de Persistencia e Motor PDF\par
 \par
-        Compilar a tela que fizemos com o Grid menor e Avisos maiores e validar se o conforto na digita\'e7\'e3o atingiu a expectativa dele.\par
-\cf0\par
-\cf1 Fase 2: Estrutura\'e7\'e3o para M\'faltiplas Congrega\'e7\'f5es (Backend / C\'f3digo)\par
-\par
-Aqui preparamos os "bastidores" do programa para suportar o que ele mostrou no Excel (Beco da Vit\'f3ria, Vale das Figueiras, etc).\par
-\par
-    Refatora\'e7\'e3o do Modelo de Dados:\par
-\par
-        Alterar a classe/entidade que guarda os dados de uma \'fanica Congrega\'e7\'e3o para suportar uma Lista/Array (ex: List<Congregacao>).\par
-\par
-    Ajuste na Rotina de Salvamento:\par
-\par
-        Modificar o m\'e9todo do bot\'e3o Salvar para gravar e ler essa nova lista corretamente no banco de dados ou arquivo JSON/XML.\par
-\cf0\par
-\cf1 Fase 3: Nova Interface de M\'faltiplas Congrega\'e7\'f5es (Frontend / Tela)\par
-\par
-Como vamos permitir que o Denis adicione e alterne entre v\'e1rias congrega\'e7\'f5es na tela unificada.\par
-\par
-    Controle de Navega\'e7\'e3o Interno:\par
-\par
-        Implementar na coluna da direita um mecanismo para gerenciar a lista. Pode ser um ComboBox (menu suspenso) escrito "Selecione a Congrega\'e7\'e3o", junto com bot\'f5es [+] Nova e [-] Excluir.\par
-\par
-        Alternativa: Usar um pequeno TabControl apenas dentro da coluna da direita, onde cada aba \'e9 uma congrega\'e7\'e3o.\par
-\par
-    L\'f3gica de Preenchimento da Tela (Bind):\par
-\par
-        Criar a rotina: ao trocar de congrega\'e7\'e3o no menu/aba, a tela limpa e carrega o Grid e os Avisos espec\'edficos daquela congrega\'e7\'e3o selecionada.\par
-\cf0\par
-\cf1 Fase 4: Ajuste do Gerador de PDF / Impress\'e3o\par
-\par
-A etapa final para o produto completo: o motor de impress\'e3o precisa entender as novas congrega\'e7\'f5es.\par
-\par
-    Refatora\'e7\'e3o do Motor de PDF:\par
-\par
-        Alterar a rotina que desenha o PDF para incluir um la\'e7o de repeti\'e7\'e3o (foreach).\par
-\par
-        O sistema deve imprimir a P\'e1gina 1 (Sede) e depois gerar uma p\'e1gina nova para cada congrega\'e7\'e3o existente na lista.\par
-\par
-    Regras de Quebra de P\'e1gina:\par
-\par
-        Garantir que os "Avisos Gerais (Final)" saiam apenas na \'faltima p\'e1gina do documento, ap\'f3s a impress\'e3o da \'faltima congrega\'e7\'e3o.\par
-\par
-\par
+4.1 Validar a geracao do arquivo INI apos o preenchimento misto de dias para garantir que textos customizados, como indicacoes de sabado ou quarta na mesma coluna, sejam serializados adequadamente pelo servico responsavel.\par
+4.2 Revisar o metodo de montagem da pagina de congregacoes no PdfService.\par
+4.3 Certificar que as celulas da tabela gerada no relatorio acomodem dinamicamente o comprimento do texto editado na coluna de datas sem estourar as margens fixadas do documento.\par
 }

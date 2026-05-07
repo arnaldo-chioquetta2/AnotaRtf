@@ -1,157 +1,23 @@
-{\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fswiss\fprq2\fcharset0 Segoe UI;}}
-{\colortbl ;\red0\green128\blue0;\red255\green165\blue0;\red0\green0\blue255;\red255\green0\blue0;}
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fswiss\fprq2\fcharset0 Segoe UI;}{\f1\fnil\fcharset0 Segoe UI;}}
+{\colortbl ;\red0\green128\blue0;\red0\green0\blue0;\red0\green0\blue255;}
 {\*\generator Riched20 10.0.19041}\viewkind4\uc1 
-\pard\cf1\f0\fs30\lang1046 Etapa 1\par
+\pard\cf1\f0\fs30\lang1046 | 1. Defini\'e7\'f5es de regra do novo fluxo   | Definir que entrega avulsa usa Pix manual NuBank, sem pagamento direto ao motoboy e sem OpenPix.                             | Documenta\'e7\'e3o interna / regra de neg\'f3cio. Sem altera\'e7\'e3o obrigat\'f3ria de c\'f3digo.                                                                \cf2 |\par
+\cf3 | 2. Ajustes de banco de dados           | Adicionar campos para pagamento manual, confirma\'e7\'e3o, c\'f3digo, finaliza\'e7\'e3o, comiss\'e3o, repasse e controle financeiro.           | Migration/SQL em `et_entregas`, `et_entregador`, poss\'edvel `et_pagamentos_manuais`, poss\'edvel `tt_pix_manual_config`. \par
+                         |\par
+| 3. Configura\'e7\'e3o do Pix manual NuBank   | Cadastrar QR Code, chave Pix, nome do recebedor e texto de instru\'e7\'e3o exibido ao cliente.                                     | `tt_config` ou nova tabela `tt_pix_manual_config`; tela administrativa futura.                                                               \cf2 |\par
+| 4. Aprova\'e7\'e3o do or\'e7amento              | Criar entrega avulsa com motoboy do or\'e7amento, valor fechado, dist\'e2ncia, status inicial e pagamento pendente.                | `app/Http/Controllers/EntregaTudoController.php`; m\'e9todo `aprovarEntregaAvulsa` ou `aprovarOrcamentoAvulso`; `app/Entregas/EntregaTudo.php`. |\par
 \par
-Confirmar o diagn\'f3stico do erro atual\par
+| 5. Tela de pagamento manual            | Exibir QR Code NuBank, valor exato, instru\'e7\'f5es e bot\'e3o \ldblquote Paguei\rdblquote  ap\'f3s aprova\'e7\'e3o do or\'e7amento.                                 | `resources/views/entregatudo/pagamento-manual.blade.php`; rota web em `routes/web.php`.                                                      |\par
+| 6. Endpoint \ldblquote Paguei\rdblquote                    | Registrar que o cliente informou pagamento, sem acionar motoboy at\'e9 valida\'e7\'e3o manual do admin.                               | `routes/api.php`; `EntregaTudoController@pagueiEntregaAvulsa`.                                                                               |\par
+| 7. Alerta administrativo               | Mostrar pagamentos manuais pendentes no painel admin e tocar alerta sonoro quando houver novos itens.                        | `resources/views/adm/index.blade.php`; controller administrativo atual; endpoint de consulta pend\'eancias.                                     |\par
+| 8. Confirma\'e7\'e3o manual pelo admin       | Admin confirma pagamento no sistema ap\'f3s conferir NuBank, gerando c\'f3digo e liberando chamada ao motoboy.                     | `routes/web.php` ou `routes/api.php`; controller administrativo; m\'e9todo `confirmarPagamentoEntregaAvulsa`.                                   |\par
+| 9. Acionamento do motoboy              | Ap\'f3s pagamento confirmado, enviar chamada ao motoboy previamente escolhido no or\'e7amento, sem recalcular.                     | `app/Entregas/EntregaTudo.php`; m\'e9todo `acionarMotoboyEntregaAvulsa`; atualiza\'e7\'e3o de `et_entregador.chamado`.                                |\par
+| 10. Motoboy recebe a entrega           | App identifica entrega avulsa chamada, exibe origem, destino, valor e permite aceitar ou recusar.                            | `app/Http/Controllers/AppController.php`; m\'e9todos atuais de heartbeat/chamadas; APIs do app EntregaTudo.                                     |\par
+| 11. Finaliza\'e7\'e3o por c\'f3digo             | Motoboy informa c\'f3digo recebido do cliente; sistema valida e finaliza a entrega avulsa.                                      | `routes/api.php`; `EntregaTudoController@confirmarCodigoEntregaAvulsa` ou m\'e9todo em `AppController`.                                         |\par
+| 12. Repasse financeiro ao motoboy      | Ap\'f3s finaliza\'e7\'e3o, creditar valor da entrega ao motoboy, aplicando comiss\'e3o conforme regra do primeiro m\'eas.                   | `app/ContaMov.php`; `ContaMov::credita_entregadora`; poss\'edvel `EntregaAvulsaFinanceiroService`.                                              |\par
+| 13. Regra do primeiro m\'eas sem comiss\'e3o | Registrar primeira entrega finalizada do motoboy e isentar comiss\'e3o durante trinta dias a partir dela.                       | Campo `et_entregador.primeira_entrega_em`; servi\'e7o financeiro de entrega avulsa.                                                             |\par
+| 14. P\'e1gina do cliente / acompanhamento | Cliente acompanha status da entrega, motoboy, c\'f3digo de confirma\'e7\'e3o e finaliza\'e7\'e3o por polling.                               | `resources/views/entregatudo/mapa.blade.php`; `EntregaTudoController@mapaEntregaAvulsa`; endpoint de status.                                 |\par
+| 15. Testes obrigat\'f3rios                | Validar fluxo completo: or\'e7amento, pagamento informado, confirma\'e7\'e3o admin, acionamento, c\'f3digo, finaliza\'e7\'e3o e cr\'e9dito \'fanico. | Testes manuais, CURL, logs `LoggerService`, consultas SQL em `et_entregas` e conta do motoboy.                                               |\par
 \par
-Subetapa 1.1\par
-\par
-Validar se o CPF do comprador est\'e1 chegando no fluxo.\par
-Resumo confirmar que o cadastro j\'e1 preenche o documento usado no Pix.\par
-Fonte prov\'e1vel OrderPaymentService, PedidoController, cadastro do usu\'e1rio. \par
-\cf0\par
-\cf1 Subetapa 1.2\par
-\par
-Validar se o payload envia payer.identification.number corretamente.\par
-Resumo garantir que o CPF enviado ao gateway \'e9 o do comprador e vai sem m\'e1scara.\par
-Fonte prov\'e1vel MercadoPagoService::createPixPayment, logs do pagamento. \par
-\par
-Subetapa 1.3\par
-\par
-Confirmar a causa funcional do 401.\par
-Resumo verificar incompatibilidade entre ambiente test e credencial live.\par
-Fonte prov\'e1vel MercadoPagoService, config/services.php, .env, logs. \par
-\cf0\par
-\cf2 Etapa 2\par
-\par
-Garantir CPF obrigat\'f3rio no fluxo de gera\'e7\'e3o do Pix\par
-\par
-Subetapa 2.1\par
-\par
-Validar CPF antes de tentar criar o pagamento.\par
-Resumo bloquear a gera\'e7\'e3o do Pix se o comprador n\'e3o tiver CPF.\par
-Fonte prov\'e1vel OrderPaymentService::createPixForOrder, loadOrderData. \par
-\par
-Subetapa 2.2\par
-\par
-Padronizar o documento do comprador.\par
-Resumo normalizar CPF para s\'f3 n\'fameros e definir type como CPF.\par
-Fonte prov\'e1vel MercadoPagoService::createPixPayment. \par
-\par
-Subetapa 2.3\par
-\par
-Retornar erro claro para o checkout quando faltar CPF.\par
-Resumo n\'e3o deixar o fluxo cair em erro gen\'e9rico do gateway.\par
-Fonte prov\'e1vel OrderPaymentService, PedidoController::PagtoPix, PagtoPixIndisponivel. \par
-\par
-Etapa 3\par
-\par
-Revisar credenciais e ambiente do Mercado Pago\par
-\par
-Subetapa 3.1\par
-\par
-Mapear qual ambiente a aplica\'e7\'e3o considera ativo.\par
-Resumo identificar de onde sai a no\'e7\'e3o de test ou production.\par
-Fonte prov\'e1vel config/services.php, .env, tt_config se houver apoio. \par
-\par
-Subetapa 3.2\par
-\par
-Mapear quais credenciais est\'e3o sendo usadas na chamada.\par
-Resumo conferir access token, public key e prefixo real do token.\par
-Fonte prov\'e1vel MercadoPagoService, logs, .env. \par
-\par
-Subetapa 3.3\par
-\par
-Bloquear combina\'e7\'e3o inv\'e1lida de ambiente e token.\par
-Resumo impedir test com APP_USR ou production com credencial de teste.\par
-Fonte prov\'e1vel MercadoPagoService::createPixPayment, classe de configura\'e7\'e3o do gateway. \cf0\par
-\par
-\cf1 Subetapa 3.4\par
-\par
-Padronizar a leitura das credenciais por ambiente.\par
-Resumo evitar ambiguidade entre chave de teste e chave produtiva.\par
-Fonte prov\'e1vel config/services.php, .env, MercadoPagoService. \par
-\cf0\par
-\cf3 Etapa 4\par
-\par
-Ajustar o MercadoPagoService para valida\'e7\'e3o pr\'e9via\par
-\par
-Subetapa 4.1\par
-\par
-Adicionar valida\'e7\'e3o de ambiente antes do POST.\par
-Resumo falhar cedo com mensagem interna clara se a credencial for incompat\'edvel.\par
-Fonte prov\'e1vel MercadoPagoService::createPixPayment. \par
-\cf0\par
-Subetapa 4.2\par
-\par
-Ampliar logs t\'e9cnicos da chamada.\par
-Resumo registrar environment, token prefix, payment_method_id e presen\'e7a do CPF.\par
-Fonte prov\'e1vel MercadoPagoService::createPixPayment, LoggerService. \par
-\par
-Subetapa 4.3\par
-\par
-Padronizar o retorno de erro do gateway.\par
-Resumo devolver mensagem \'fatil para o controller quando houver 401 por credencial.\par
-Fonte prov\'e1vel MercadoPagoService, OrderPaymentService. \par
-\par
-Etapa 5\par
-\par
-Ajustar a orquestra\'e7\'e3o do checkout\par
-\par
-Subetapa 5.1\par
-\par
-Bloquear a cria\'e7\'e3o do Pix sem CPF v\'e1lido.\par
-Resumo o OrderPaymentService n\'e3o deve chamar o gateway sem documento.\par
-Fonte prov\'e1vel OrderPaymentService::createPixForOrder. \par
-\par
-Subetapa 5.2\par
-\par
-Exibir orienta\'e7\'e3o clara ao usu\'e1rio ou operador.\par
-Resumo informar aus\'eancia de CPF ou incompatibilidade de ambiente sem erro obscuro.\par
-Fonte prov\'e1vel PedidoController::PagtoPix, PagtoPixIndisponivel. \par
-\par
-Subetapa 5.3\par
-\par
-Preservar a rastreabilidade da tentativa falha.\par
-Resumo registrar motivo da recusa antes da chamada ou retorno 401 do gateway.\par
-Fonte prov\'e1vel PaymentTransactionService, logs, tt_pedido. \par
-\par
-Etapa 6\par
-\par
-Validar o fluxo em ambiente de teste\par
-\par
-Subetapa 6.1\par
-\par
-Executar PagtoPix com comprador que tenha CPF cadastrado.\par
-Resumo confirmar que o payload sai completo.\par
-Fonte prov\'e1vel cadastro do comprador, PedidoController, MercadoPagoService. \par
-\par
-Subetapa 6.2\par
-\par
-Verificar logs da chamada.\par
-Resumo conferir environment=test e payer.identification.number preenchido.\par
-Fonte prov\'e1vel LoggerService, logs do gateway. \par
-\par
-Subetapa 6.3\par
-\par
-Confirmar que o 401 deixou de ocorrer.\par
-Resumo a resposta do gateway deve sair do erro de credencial incompat\'edvel.\par
-Fonte prov\'e1vel logs de resposta, MercadoPagoService. \par
-\par
-Subetapa 6.4\par
-\par
-Confirmar gera\'e7\'e3o normal da cobran\'e7a Pix.\par
-Resumo esperar retorno com payment id, qr code e status padr\'e3o do gateway.\par
-Fonte prov\'e1vel OrderPaymentService, PaymentTransactionService, PagtoPix. \par
-\par
-Pr\'f3xima sugest\'e3o mais \'fatil\par
-\par
-Me mostre o m\'e9todo atual completo `app/Services/Payments/MercadoPagoService.php::createPixPayment` para eu transformar essa an\'e1lise em altera\'e7\'e3o concreta sem chute.\par
-\par
-\cf4 refatorar\par
-app\\Services\\Payments\\MercadoPagoService.php\par
-    createPixPayment\par
-app\\Services\\Payments\\OrderPaymentService.php\par
-    createPixForOrder\par
+\b\f1\fs34 Incluir o link para entrega avulsa\b0\f0\fs30\par
 }

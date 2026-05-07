@@ -1,14 +1,13 @@
 ﻿using AtcCtrl;
+using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Drawing;
-using Microsoft.Win32;
 using System.Reflection;
-using System.Windows.Forms;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Windows.Forms;
 
 namespace AnotaRtf
 {
@@ -247,7 +246,8 @@ namespace AnotaRtf
             {
                 Dock = DockStyle.Fill,
                 caminhoDoArquivo = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"anotacao{fileIndex}.rtf"),
-                Criptografia = false
+                Criptografia = false,
+                ModoExtra = true
             };
 
             editor.PerformLayout();
