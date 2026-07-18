@@ -1,20 +1,47 @@
-{\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Arial;}}
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil Arial;}}
+{\colortbl ;\red0\green0\blue255;\red0\green0\blue0;}
 {\*\generator Riched20 10.0.19041}\viewkind4\uc1 
-\pard\fs30\lang1046 Vi agora como ideal para vender AAVE\par
-mas tamb\'e9m vi a mensagem \par
-"Nubank (nao elegivel) Nenhuma moeda boa para venda com saldo nesta corretora."\par
-as moedas em estado de venda s\'e3o\par
-DOT\par
-NEAR\par
-UNI\par
-APT\par
-Chainlink\par
-Destas, que tem na nuBank e que tenho saldo s\'e3o\par
-DOT\par
-S\'f3 que ela tem s\'f3 R 0,20\par
-ent\'e3o n\'e3o \'e9 eleg\'edvel por ter um saldo menor que 1 real\par
-mas ela \'e9 que deveria estar ali como Ideal para vender\par
-tamb\'e9m n\'e3o apareceu nenhuma sugest\'e3o de moeada para comprar\par
-as moedas em estado de compra s\'e3o\par
-LDO\fs26\par
+\pard\cf1\fs30\lang1046 1. **Revisar interface atual** \f1\emdash  Confirmar estrutura, campos e comportamento visual.\cf2\par
+\par
+\cf1 2. **Definir lista oficial de moedas** \emdash  Identificar fonte confi\f0\'e1vel e excluir USDC.\par
+\cf2\par
+3. **Definir formato do formul\'e1rio** \f1\emdash  Padronizar payload enviado ao backend.\par
+\par
+4. **Definir significado dos valores** \emdash  Confirmar quantidade, reais ou equivalente em USDC.\par
+\par
+5. **Mapear persist\f0\'eancia existente** \f1\emdash  Localizar tabelas, models e campos reutiliz\f0\'e1veis.\par
+\par
+6. **Definir armazenamento do USDC** \f1\emdash  Escolher posi\f0\'e7\'e3o, saldo ou configura\'e7\'e3o espec\'edfica.\par
+\par
+7. **Implementar valida\'e7\'e3o backend** \f1\emdash  Validar confirma\f0\'e7\'e3o, margem, moedas e quantidades.\par
+\par
+8. **Bloquear moedas duplicadas** \f1\emdash  Validar duplicidade no frontend e backend.\par
+\par
+9. **Fixar usu\f0\'e1rio autenticado** \f1\emdash  Impedir grava\f0\'e7\'f5es para outros usu\'e1rios.\par
+\par
+10. **Salvar configura\'e7\'f5es iniciais** \f1\emdash  Persistir margem e prefer\f0\'eancias do usu\'e1rio.\par
+\par
+11. **Salvar posi\'e7\'f5es iniciais** \f1\emdash  Criar ou atualizar moedas e quantidades.\par
+\par
+12. **Usar transa\f0\'e7\'e3o de banco** \f1\emdash  Evitar dados parciais em caso de erro.\par
+\par
+13. **Garantir submiss\f0\'e3o idempotente** \f1\emdash  Evitar duplica\f0\'e7\'f5es por reenvio ou duplo clique.\par
+\par
+14. **Marcar onboarding conclu\'eddo** \f1\emdash  Atualizar timestamp somente ap\f0\'f3s sucesso total.\par
+\par
+15. **Redirecionar ao modo sugerido** \f1\emdash  Encaminhar usu\f0\'e1rio novo \'e0 p\'e1gina correta.\par
+\par
+16. **Retomar onboarding incompleto** \f1\emdash  Reabrir fluxo quando nada foi salvo.\par
+\par
+17. **Preservar usu\f0\'e1rios operacionais** \f1\emdash  Manter fluxo atual sem altera\f0\'e7\'f5es.\par
+\par
+18. **Tratar usu\'e1rio 467 separadamente** \f1\emdash  Decidir regra de acesso `cripto = 0`.\par
+\par
+19. **Criar testes automatizados** \emdash  Cobrir valida\f0\'e7\'f5es, seguran\'e7a, falhas e reenvios.\par
+\par
+20. **Executar teste manual controlado** \f1\emdash  Validar fluxo completo com usu\f0\'e1rio novo.\par
+\par
+21. **Preparar rollback e backups** \f1\emdash  Garantir revers\f0\'e3o segura das mudan\'e7as.\par
+\par
+22. **Documentar implementa\'e7\'e3o final** \f1\emdash  Registrar arquivos, regras, tabelas e testes.\f0\par
 }

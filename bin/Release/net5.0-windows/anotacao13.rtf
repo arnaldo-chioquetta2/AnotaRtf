@@ -1,5 +1,5 @@
 {\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Arial;}}
-{\colortbl ;\red0\green0\blue0;}
+{\colortbl ;\red0\green0\blue0;\red0\green128\blue0;}
 {\*\generator Riched20 10.0.19041}\viewkind4\uc1 
 \pard\cf1\fs28\lang1046 - Caixa de respostas da ia deve ser wordwrap\par
 \par
@@ -20,5 +20,67 @@ Mas a lista de permiss\'f5es ser acess\'edvel por uma janela.\par
 - Subir pro git\par
 - Aumentar a tela\par
 \par
-- Icones indicando as a\'e7\'f5es\par
+INDICAR ESPECIALIZA\'c7\'c3O POR LINGUAGEM\par
+\par
+Entendi. Segue em texto puro, com cada item resumido em at\'e9 20 palavras:\par
+\par
+\cf2 1. Criar enum LanguageProfile\par
+   Define os valores internos da configura\'e7\'e3o: Geral e CSharp.\par
+\cf1\par
+\cf2 2. Atualizar ConfigManager\par
+   Salvar, carregar e fornecer valor padr\'e3o para o perfil de linguagem.\par
+\cf1\par
+\cf2 3. Alterar tela de configura\'e7\'f5es\par
+   Adicionar ComboBox com as op\'e7\'f5es vis\'edveis Geral e C#.\par
+\cf1\par
+\cf2 4. Carregar op\'e7\'e3o salva na UI\par
+   Ao abrir configura\'e7\'f5es, selecionar automaticamente o perfil salvo.\par
+\cf1\par
+\cf2 5. Salvar altera\'e7\'e3o da UI\par
+   Ao confirmar configura\'e7\'f5es, persistir o perfil escolhido pelo usu\'e1rio.\par
+\cf1\par
+\cf2 6. Atualizar Main.cs\par
+   Ler o perfil salvo antes de acionar o processamento da IA.\par
+\cf1\par
+\cf2 7. Passar perfil ao fluxo da IA\par
+   Enviar a escolha para o AgentCore ou para a montagem do prompt.\par
+\cf1\par
+\cf2 8. Ajustar PromptLoader\par
+   Gerar instru\'e7\'e3o espec\'edfica para o perfil Geral ou C#.\par
+\cf1\par
+\cf2 9. Inserir instru\'e7\'e3o no prompt final\par
+   Adicionar o perfil antes do contexto e da entrada do usu\'e1rio.\par
+\cf1\par
+\cf2 10. Definir comportamento Geral\par
+    N\'e3o assumir linguagem espec\'edfica, exceto quando o contexto indicar.\par
+\cf1\par
+\cf2 11. Definir comportamento C#\par
+    Priorizar C#, .NET Framework, WinForms e padr\'f5es t\'e9cnicos do projeto.\par
+\cf1\par
+\cf2 12. Registrar perfil no log\par
+    Gravar qual perfil foi usado em cada execu\'e7\'e3o.\par
+\cf1\par
+\cf2 13. Atualizar hist\'f3rico\par
+    Opcionalmente salvar o perfil usado em cada intera\'e7\'e3o do projeto.\par
+\cf1\par
+\cf2 14. Atualizar status da UI\par
+    Opcionalmente exibir o perfil atual no rodap\'e9 da aplica\'e7\'e3o.\par
+\cf1\par
+15. Testar ConfigManager\par
+    Validar valor padr\'e3o, salvamento, carregamento e fallback para valores inv\'e1lidos.\par
+\par
+16. Testar tela de configura\'e7\'f5es\par
+    Validar exibi\'e7\'e3o, sele\'e7\'e3o inicial e persist\'eancia das op\'e7\'f5es.\par
+\par
+17. Testar prompt final\par
+    Confirmar que a instru\'e7\'e3o correta aparece no prompt enviado \'e0 IA.\par
+\par
+18. Testar modo Geral\par
+    Verificar respostas neutras, sem prefer\'eancia obrigat\'f3ria por C#.\par
+\par
+19. Testar modo C#\par
+    Verificar respostas e a\'e7\'f5es priorizando C# e .NET.\par
+\par
+20. Executar regress\'e3o geral\par
+    Garantir que projeto, contexto, Gemini, a\'e7\'f5es, logs e hist\'f3rico continuam funcionando.\par
 }

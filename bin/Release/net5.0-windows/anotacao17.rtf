@@ -1,5 +1,5 @@
 {\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Arial;}}
-{\colortbl ;\red0\green0\blue0;\red0\green128\blue0;\red255\green165\blue0;\red0\green0\blue255;}
+{\colortbl ;\red0\green0\blue0;\red0\green128\blue0;\red255\green165\blue0;}
 {\*\generator Riched20 10.0.19041}\viewkind4\uc1 
 \pard\cf1\fs28\lang1046 ETAPA 1: Estrutura Minima de Dados\par
 Objetivo: \cf2 Garantir que o modelo base da tarefa exista e compile.\par
@@ -58,20 +58,20 @@ Instrucao logica para o AI: No momento de inicializacao do programa, ou no carre
 ETAPA 3: VINCULACAO DE EVENTOS E SINCRONIZACAO UI-MODELO\par
 Objetivo: \par
 \par
-\cf4 Conectar as alteracoes visuais da prioridade ao motor de ordenacao e atualizar a lista em tempo real.\par
+\cf2 Conectar as alteracoes visuais da prioridade ao motor de ordenacao e atualizar a lista em tempo real.\par
 Instrucao logica para o AI: Ao clicar em OK na tela de notas, ou ao confirmar o cadastro de nova tarefa, capture o valor selecionado no combo, atualize a propriedade Prioridade no objeto Tarefa correspondente e dispare um evento ou chamada para o Motor de Priorizacao. Apos receber a lista reordenada, atualize a exibicao principal (grid ou lista) sem recarregar toda a aplicacao. Garanta que o combo reflita o valor correto se a tela for reaberta.\par
 O que testar e debugar: Altere a prioridade de uma tarefa via combo e clique OK. Verifique se a posicao da tarefa na lista principal muda conforme esperado. Abra a mesma tarefa novamente e confirme se o combo mostra o valor salvo. Teste trocas rapidas de prioridade e verifique se a UI nao congela ou exibe posicoes desatualizadas.\par
 \cf0\par
 ETAPA 4: INTEGRACAO COM CAMADA DE PERSISTENCIA\par
 Objetivo: \par
 \par
-\cf1 Assegurar que a prioridade seja gravada e lida corretamente do armazenamento local junto com os demais dados.\par
+\cf2 Assegurar que a prioridade seja gravada e lida corretamente do armazenamento local junto com os demais dados.\par
 Instrucao logica para o AI: Modifique os metodos de salvamento e carregamento do programa para incluir a propriedade Prioridade no contrato de dados (JSON, XML, banco ou arquivo texto). Ao serializar, garanta que o tipo seja inteiro e o nome da chave seja explicito. Ao deserializar, trate a ausencia do campo aplicando a regra de default 10. Nao quebre a leitura de versoes anteriores do arquivo de dados.\par
 \cf0\par
 ETAPA 5: TRATAMENTO DE FALHAS E FALLBACK DE INTERFACE\par
 Objetivo: \par
 \par
-\cf1 Prevenir travamentos quando dados de prioridade estao corrompidos, fora do intervalo ou a interface falha ao renderizar.\par
+\cf2 Prevenir travamentos quando dados de prioridade estao corrompidos, fora do intervalo ou a interface falha ao renderizar.\par
 Instrucao logica para o AI: Adicione validacao de entrada antes de atribuir o valor do combo ao modelo. Se o valor for menor que 1 ou maior que 10, force para 1 ou 10 respectivamente e logue o aviso internamente. Se o carregamento do combo falhar por falta de recursos ou erro de binding, exiba um estado padrao (prioridade 10 selecionada) e permita ao usuario redefinir manualmente. Garanta que qualquer excecao na atualizacao de prioridade nao impeca o salvamento das anotacoes de texto.\par
 \cf0\par
 \par

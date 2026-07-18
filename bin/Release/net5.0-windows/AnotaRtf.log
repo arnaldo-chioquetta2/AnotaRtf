@@ -1,60 +1,67 @@
-[00:30:24.279] ========================================
-[00:30:24.291] AnoteitoRtf - Início da Sessão
-[00:30:24.291] Versão: 1.5.1.0
-[00:30:24.292] Data/Hora: 07/05/2026 00:30:24
-[00:30:24.292] Arquivo: D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\AnotaRtf.log
-[00:30:24.292] ========================================
-[00:30:24.296] Aplicativo iniciado
-[00:30:24.669] [LOG] >>> CreateLogTab EXECUTOU
-[00:30:24.670] [LOG] Aba Log inserida. Total abas: 2
-[00:30:24.715] [TESTE] Arquivo criado: D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\teste_escrita.txt
-[00:30:24.716] [v1.5.1] Form1_Load iniciado
-[00:30:24.716] [v1.5.1] Base Directory: D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\
-[00:30:24.720] [v1.5.1] Arquivos RTF encontrados: 11
-[00:30:24.720] [v1.5.1]   → anotacao1.rtf
-[00:30:24.720] [v1.5.1]   → anotacao11.rtf
-[00:30:24.721] [v1.5.1]   → anotacao13.rtf
-[00:30:24.721] [v1.5.1]   → anotacao14.rtf
-[00:30:24.721] [v1.5.1]   → anotacao16.rtf
-[00:30:24.721] [v1.5.1]   → anotacao17.rtf
-[00:30:24.721] [v1.5.1]   → anotacao18.rtf
-[00:30:24.722] [v1.5.1]   → anotacao2.rtf
-[00:30:24.722] [v1.5.1]   → anotacao3.rtf
-[00:30:24.722] [v1.5.1]   → anotacao4.rtf
-[00:30:24.722] [v1.5.1]   → anotacao9.rtf
-[00:30:24.731] [v1.5.0] Resize | WindowState=Normal
-[00:30:24.733] [v1.5.0] Resize | WindowState=Normal
-[00:30:24.740] [v1.5.0] LoadTabs iniciado
-[00:30:24.748] [v1.5.0] Encontradas 9 abas no Registro
-[00:30:24.750] [v1.5.0] CreateTab(fileIndex=1, displayName='Anotações')
-[00:30:24.821] [v1.5.0] ✅ Aba criada: 'Anotações' | Controles internos: 2
-[00:30:24.821] [v1.5.0] ✓ Aba 'Anotações' carregada (anotacao1.rtf)
-[00:30:24.821] [v1.5.0] CreateTab(fileIndex=17, displayName='Teste atcIa')
-[00:30:24.860] [v1.5.0] ✅ Aba criada: 'Teste atcIa' | Controles internos: 2
-[00:30:24.860] [v1.5.0] ✓ Aba 'Teste atcIa' carregada (anotacao17.rtf)
-[00:30:24.860] [v1.5.0] CreateTab(fileIndex=18, displayName='Chão')
-[00:30:24.892] [v1.5.0] ✅ Aba criada: 'Chão' | Controles internos: 2
-[00:30:24.893] [v1.5.0] ✓ Aba 'Chão' carregada (anotacao18.rtf)
-[00:30:24.894] [v1.5.0] CreateTab(fileIndex=3, displayName='Teletudo')
-[00:30:24.931] [v1.5.0] ✅ Aba criada: 'Teletudo' | Controles internos: 2
-[00:30:24.932] [v1.5.0] ✓ Aba 'Teletudo' carregada (anotacao3.rtf)
-[00:30:24.932] [v1.5.0] CreateTab(fileIndex=9, displayName='Escala')
-[00:30:24.970] [v1.5.0] ✅ Aba criada: 'Escala' | Controles internos: 2
-[00:30:24.971] [v1.5.0] ✓ Aba 'Escala' carregada (anotacao9.rtf)
-[00:30:24.971] [v1.5.0] CreateTab(fileIndex=11, displayName='Cripto')
-[00:30:25.012] [v1.5.0] ✅ Aba criada: 'Cripto' | Controles internos: 2
-[00:30:25.012] [v1.5.0] ✓ Aba 'Cripto' carregada (anotacao11.rtf)
-[00:30:25.012] [v1.5.0] CreateTab(fileIndex=13, displayName='atcIa')
-[00:30:25.048] [v1.5.0] ✅ Aba criada: 'atcIa' | Controles internos: 2
-[00:30:25.048] [v1.5.0] ✓ Aba 'atcIa' carregada (anotacao13.rtf)
-[00:30:25.048] [v1.5.0] CreateTab(fileIndex=14, displayName='Douglas')
-[00:30:25.083] [v1.5.0] ✅ Aba criada: 'Douglas' | Controles internos: 2
-[00:30:25.084] [v1.5.0] ✓ Aba 'Douglas' carregada (anotacao14.rtf)
-[00:30:25.084] [v1.5.0] CreateTab(fileIndex=16, displayName='CT')
-[00:30:25.120] [v1.5.0] ✅ Aba criada: 'CT' | Controles internos: 2
-[00:30:25.121] [v1.5.0] ✓ Aba 'CT' carregada (anotacao16.rtf)
-[00:30:25.121] [v1.5.0] nextFileIndex definido para: 19
-[00:30:25.123] [v1.5.0] Aba restaurada: índice 1 ('Teste atcIa')
-[00:30:25.124] Título definido: AnoteitoRtf v1.5.1
-[00:30:25.157] [v1.5.0] Form1_Shown | firstShown=True, WindowState=Normal
-[00:30:29.460] [v1.5.0] Resize | WindowState=Minimized
+[01:48:11.923] ========================================
+[01:48:11.935] AnoteitoRtf - Início da Sessão
+[01:48:11.935] Versão: 1.5.1.0
+[01:48:11.935] Data/Hora: 18/07/2026 01:48:11
+[01:48:11.935] Arquivo: D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\AnotaRtf.log
+[01:48:11.935] ========================================
+[01:48:11.939] Aplicativo iniciado
+[01:48:12.101] [LOG] >>> CreateLogTab EXECUTOU
+[01:48:12.102] [LOG] Aba Log inserida. Total abas: 2
+[01:48:12.150] [TESTE] Arquivo criado: D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\teste_escrita.txt
+[01:48:12.150] [v1.5.1] Form1_Load iniciado
+[01:48:12.150] [v1.5.1] Base Directory: D:\Prog\AnofaRTF\AnotaRtf-main\AnotaRtf\bin\Release\net5.0-windows\
+[01:48:12.155] [v1.5.1] Arquivos RTF encontrados: 13
+[01:48:12.155] [v1.5.1]   → anotacao1.rtf
+[01:48:12.155] [v1.5.1]   → anotacao11.rtf
+[01:48:12.155] [v1.5.1]   → anotacao13.rtf
+[01:48:12.155] [v1.5.1]   → anotacao14.rtf
+[01:48:12.156] [v1.5.1]   → anotacao16.rtf
+[01:48:12.156] [v1.5.1]   → anotacao17.rtf
+[01:48:12.156] [v1.5.1]   → anotacao18.rtf
+[01:48:12.156] [v1.5.1]   → anotacao19.rtf
+[01:48:12.156] [v1.5.1]   → anotacao2.rtf
+[01:48:12.156] [v1.5.1]   → anotacao20.rtf
+[01:48:12.156] [v1.5.1]   → anotacao3.rtf
+[01:48:12.157] [v1.5.1]   → anotacao4.rtf
+[01:48:12.157] [v1.5.1]   → anotacao9.rtf
+[01:48:12.166] [v1.5.0] Resize | WindowState=Normal
+[01:48:12.168] [v1.5.0] Resize | WindowState=Normal
+[01:48:12.175] [v1.5.0] LoadTabs iniciado
+[01:48:12.184] [v1.5.0] Encontradas 11 abas no Registro
+[01:48:12.185] [v1.5.0] CreateTab(fileIndex=1, displayName='Anotações')
+[01:48:12.234] [v1.5.0] ✅ Aba criada: 'Anotações' | Controles internos: 2
+[01:48:12.234] [v1.5.0] ✓ Aba 'Anotações' carregada (anotacao1.rtf)
+[01:48:12.235] [v1.5.0] CreateTab(fileIndex=11, displayName='Cripto')
+[01:48:12.259] [v1.5.0] ✅ Aba criada: 'Cripto' | Controles internos: 2
+[01:48:12.260] [v1.5.0] ✓ Aba 'Cripto' carregada (anotacao11.rtf)
+[01:48:12.260] [v1.5.0] CreateTab(fileIndex=13, displayName='atcIa')
+[01:48:12.283] [v1.5.0] ✅ Aba criada: 'atcIa' | Controles internos: 2
+[01:48:12.283] [v1.5.0] ✓ Aba 'atcIa' carregada (anotacao13.rtf)
+[01:48:12.283] [v1.5.0] CreateTab(fileIndex=14, displayName='Douglas')
+[01:48:12.302] [v1.5.0] ✅ Aba criada: 'Douglas' | Controles internos: 2
+[01:48:12.303] [v1.5.0] ✓ Aba 'Douglas' carregada (anotacao14.rtf)
+[01:48:12.303] [v1.5.0] CreateTab(fileIndex=20, displayName='Revisteitor')
+[01:48:12.326] [v1.5.0] ✅ Aba criada: 'Revisteitor' | Controles internos: 2
+[01:48:12.327] [v1.5.0] ✓ Aba 'Revisteitor' carregada (anotacao20.rtf)
+[01:48:12.328] [v1.5.0] CreateTab(fileIndex=16, displayName='CT')
+[01:48:12.349] [v1.5.0] ✅ Aba criada: 'CT' | Controles internos: 2
+[01:48:12.349] [v1.5.0] ✓ Aba 'CT' carregada (anotacao16.rtf)
+[01:48:12.349] [v1.5.0] CreateTab(fileIndex=19, displayName='XP3')
+[01:48:12.373] [v1.5.0] ✅ Aba criada: 'XP3' | Controles internos: 2
+[01:48:12.373] [v1.5.0] ✓ Aba 'XP3' carregada (anotacao19.rtf)
+[01:48:12.373] [v1.5.0] CreateTab(fileIndex=17, displayName='Teste atcIa')
+[01:48:12.397] [v1.5.0] ✅ Aba criada: 'Teste atcIa' | Controles internos: 2
+[01:48:12.397] [v1.5.0] ✓ Aba 'Teste atcIa' carregada (anotacao17.rtf)
+[01:48:12.397] [v1.5.0] CreateTab(fileIndex=18, displayName='TeleBonifacio')
+[01:48:12.421] [v1.5.0] ✅ Aba criada: 'TeleBonifacio' | Controles internos: 2
+[01:48:12.422] [v1.5.0] ✓ Aba 'TeleBonifacio' carregada (anotacao18.rtf)
+[01:48:12.422] [v1.5.0] CreateTab(fileIndex=3, displayName='Teletudo')
+[01:48:12.445] [v1.5.0] ✅ Aba criada: 'Teletudo' | Controles internos: 2
+[01:48:12.445] [v1.5.0] ✓ Aba 'Teletudo' carregada (anotacao3.rtf)
+[01:48:12.446] [v1.5.0] CreateTab(fileIndex=9, displayName='Escala')
+[01:48:12.466] [v1.5.0] ✅ Aba criada: 'Escala' | Controles internos: 2
+[01:48:12.467] [v1.5.0] ✓ Aba 'Escala' carregada (anotacao9.rtf)
+[01:48:12.467] [v1.5.0] nextFileIndex definido para: 21
+[01:48:12.470] [v1.5.0] Aba restaurada: índice 3 ('Douglas')
+[01:48:12.470] Título definido: AnoteitoRtf v1.5.1
+[01:48:12.503] [v1.5.0] Form1_Shown | firstShown=True, WindowState=Normal

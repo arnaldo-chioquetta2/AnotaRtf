@@ -1,23 +1,13 @@
-{\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fswiss\fprq2\fcharset0 Segoe UI;}{\f1\fnil\fcharset0 Segoe UI;}}
-{\colortbl ;\red0\green128\blue0;\red0\green0\blue0;\red0\green0\blue255;}
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Segoe UI;}{\f1\fnil Segoe UI;}{\f2\fswiss\fprq2\fcharset0 Segoe UI;}}
+{\colortbl ;\red0\green0\blue0;}
 {\*\generator Riched20 10.0.19041}\viewkind4\uc1 
-\pard\cf1\f0\fs30\lang1046 | 1. Defini\'e7\'f5es de regra do novo fluxo   | Definir que entrega avulsa usa Pix manual NuBank, sem pagamento direto ao motoboy e sem OpenPix.                             | Documenta\'e7\'e3o interna / regra de neg\'f3cio. Sem altera\'e7\'e3o obrigat\'f3ria de c\'f3digo.                                                                \cf2 |\par
-\cf3 | 2. Ajustes de banco de dados           | Adicionar campos para pagamento manual, confirma\'e7\'e3o, c\'f3digo, finaliza\'e7\'e3o, comiss\'e3o, repasse e controle financeiro.           | Migration/SQL em `et_entregas`, `et_entregador`, poss\'edvel `et_pagamentos_manuais`, poss\'edvel `tt_pix_manual_config`. \par
-                         |\par
-| 3. Configura\'e7\'e3o do Pix manual NuBank   | Cadastrar QR Code, chave Pix, nome do recebedor e texto de instru\'e7\'e3o exibido ao cliente.                                     | `tt_config` ou nova tabela `tt_pix_manual_config`; tela administrativa futura.                                                               \cf2 |\par
-| 4. Aprova\'e7\'e3o do or\'e7amento              | Criar entrega avulsa com motoboy do or\'e7amento, valor fechado, dist\'e2ncia, status inicial e pagamento pendente.                | `app/Http/Controllers/EntregaTudoController.php`; m\'e9todo `aprovarEntregaAvulsa` ou `aprovarOrcamentoAvulso`; `app/Entregas/EntregaTudo.php`. |\par
+\pard\cf1\f0\fs32\lang1046 Levantamento t\'e9cnico \f1\emdash\f0  Mapear usu\'e1rios, entregadores, or\'e7amento e entrega avulsa.\par
 \par
-| 5. Tela de pagamento manual            | Exibir QR Code NuBank, valor exato, instru\'e7\'f5es e bot\'e3o \ldblquote Paguei\rdblquote  ap\'f3s aprova\'e7\'e3o do or\'e7amento.                                 | `resources/views/entregatudo/pagamento-manual.blade.php`; rota web em `routes/web.php`.                                                      |\par
-| 6. Endpoint \ldblquote Paguei\rdblquote                    | Registrar que o cliente informou pagamento, sem acionar motoboy at\'e9 valida\'e7\'e3o manual do admin.                               | `routes/api.php`; `EntregaTudoController@pagueiEntregaAvulsa`.                                                                               |\par
-| 7. Alerta administrativo               | Mostrar pagamentos manuais pendentes no painel admin e tocar alerta sonoro quando houver novos itens.                        | `resources/views/adm/index.blade.php`; controller administrativo atual; endpoint de consulta pend\'eancias.                                     |\par
-| 8. Confirma\'e7\'e3o manual pelo admin       | Admin confirma pagamento no sistema ap\'f3s conferir NuBank, gerando c\'f3digo e liberando chamada ao motoboy.                     | `routes/web.php` ou `routes/api.php`; controller administrativo; m\'e9todo `confirmarPagamentoEntregaAvulsa`.                                   |\par
-| 9. Acionamento do motoboy              | Ap\'f3s pagamento confirmado, enviar chamada ao motoboy previamente escolhido no or\'e7amento, sem recalcular.                     | `app/Entregas/EntregaTudo.php`; m\'e9todo `acionarMotoboyEntregaAvulsa`; atualiza\'e7\'e3o de `et_entregador.chamado`.                                |\par
-| 10. Motoboy recebe a entrega           | App identifica entrega avulsa chamada, exibe origem, destino, valor e permite aceitar ou recusar.                            | `app/Http/Controllers/AppController.php`; m\'e9todos atuais de heartbeat/chamadas; APIs do app EntregaTudo.                                     |\par
-| 11. Finaliza\'e7\'e3o por c\'f3digo             | Motoboy informa c\'f3digo recebido do cliente; sistema valida e finaliza a entrega avulsa.                                      | `routes/api.php`; `EntregaTudoController@confirmarCodigoEntregaAvulsa` ou m\'e9todo em `AppController`.                                         |\par
-| 12. Repasse financeiro ao motoboy      | Ap\'f3s finaliza\'e7\'e3o, creditar valor da entrega ao motoboy, aplicando comiss\'e3o conforme regra do primeiro m\'eas.                   | `app/ContaMov.php`; `ContaMov::credita_entregadora`; poss\'edvel `EntregaAvulsaFinanceiroService`.                                              |\par
-| 13. Regra do primeiro m\'eas sem comiss\'e3o | Registrar primeira entrega finalizada do motoboy e isentar comiss\'e3o durante trinta dias a partir dela.                       | Campo `et_entregador.primeira_entrega_em`; servi\'e7o financeiro de entrega avulsa.                                                             |\par
-| 14. P\'e1gina do cliente / acompanhamento | Cliente acompanha status da entrega, motoboy, c\'f3digo de confirma\'e7\'e3o e finaliza\'e7\'e3o por polling.                               | `resources/views/entregatudo/mapa.blade.php`; `EntregaTudoController@mapaEntregaAvulsa`; endpoint de status.                                 |\par
-| 15. Testes obrigat\'f3rios                | Validar fluxo completo: or\'e7amento, pagamento informado, confirma\'e7\'e3o admin, acionamento, c\'f3digo, finaliza\'e7\'e3o e cr\'e9dito \'fanico. | Testes manuais, CURL, logs `LoggerService`, consultas SQL em `et_entregas` e conta do motoboy.                                               |\par
-\par
-\b\f1\fs34 Incluir o link para entrega avulsa\b0\f0\fs30\par
+Banco de dados e Models \f1\emdash\f0  Criar persist\'eancia de favoritos, indesejados e configura\'e7\'f5es.\par
+API de prefer\'eancias \f1\emdash\f0  Gerenciar listas e op\'e7\'e3o de aceitar outros.\par
+Tela de configura\'e7\'e3o \f1\emdash\f0  Permitir adicionar, remover e classificar entregadores.\par
+Bot\'f5es de acesso \f1\emdash\f0  Inserir atalhos nas tr\'eas p\'e1ginas necess\'e1rias.\par
+Regra de sele\'e7\'e3o \f1\emdash\f0  Priorizar favoritos e excluir indesejados.\par
+Integra\'e7\'e3o dos fluxos \f1\emdash\f0  Aplicar regras no or\'e7amento e entrega avulsa.\par
+Testes e publica\'e7\'e3o \f1\emdash\f0  Validar seguran\'e7a, desempenho e comportamento final.\f2\fs30\par
 }
